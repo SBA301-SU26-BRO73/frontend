@@ -11,6 +11,11 @@ export const axiosClient = axios.create({
 })
 
 axiosClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    if (response.data && typeof response.data === 'object' && 'data' in response.data) {
+      response.data = response.data.data
+    }
+    return response
+  },
   async (error) => Promise.reject(error),
 )
