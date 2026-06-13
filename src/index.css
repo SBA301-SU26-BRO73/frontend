@@ -1,40 +1,33 @@
 @import "tailwindcss";
-
-:root {
-  font-family: "Be Vietnam Pro", "Segoe UI", sans-serif;
-  color: #0f172a;
-  background:
-    radial-gradient(circle at top, rgba(249, 115, 22, 0.18), transparent 30%),
-    linear-gradient(180deg, #fff7ed 0%, #ffffff 46%, #f8fafc 100%);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-button,
-a {
-  transition:
-    color 150ms ease,
-    background-color 150ms ease,
-    border-color 150ms ease,
-    opacity 150ms ease;
-}
-
-#root {
-  min-height: 100vh;
+@config "../tailwind.config.js";
+@layer components {
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  
+  .glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  
+  .primary-gradient {
+    background: linear-gradient(135deg, #4648d4 0%, #006c49 50%, #008096 100%);
+  }
+  
+  .primary-gradient-text {
+    background: linear-gradient(135deg, #4648d4 0%, #006c49 100%);
+    -webkit-background-clip: text;
+    background-clip: text; /* Đã thêm dòng này để fix cảnh báo tương thích */
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .no-scrollbar::-webkit-scrollbar { 
+    display: none; 
+  }
+  
+  .no-scrollbar { 
+    -ms-overflow-style: none; 
+    scrollbar-width: none; 
+  }
 }
