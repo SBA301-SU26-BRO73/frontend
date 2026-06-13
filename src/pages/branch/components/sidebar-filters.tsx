@@ -1,4 +1,15 @@
+import { useSearchParams } from "react-router-dom";
+
 export default function SidebarFilters() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const updateFilter = (key: string, value: string | null) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (value) newParams.set(key, value);
+    else newParams.delete(key);
+    setSearchParams(newParams);
+  };
+  const currentCourtType = searchParams.get("courtTypeName");
+  const courtTypes = ["Pickleball", "Tennis", "Badminton", "Squash"];
     return (
       <aside className="hidden lg:flex flex-col w-64 shrink-0 gap-stack-lg sticky top-24 h-fit sidebar-mask">
         <div className="flex flex-col gap-1">
@@ -8,14 +19,23 @@ export default function SidebarFilters() {
   
         {/* Sport Type */}
         <div className="flex flex-col gap-3">
-          <span className="font-label-md text-on-surface-variant">Sport Type</span>
-          <div className="flex flex-wrap gap-2">
-            <button className="px-3 py-1.5 rounded-full text-label-sm border border-primary bg-primary-container text-on-primary-container font-bold">Pickleball</button>
-            <button className="px-3 py-1.5 rounded-full text-label-sm border border-outline-variant text-on-surface-variant hover:bg-surface-container-high transition-all">Tennis</button>
-            <button className="px-3 py-1.5 rounded-full text-label-sm border border-outline-variant text-on-surface-variant hover:bg-surface-container-high transition-all">Badminton</button>
-            <button className="px-3 py-1.5 rounded-full text-label-sm border border-outline-variant text-on-surface-variant hover:bg-surface-container-high transition-all">Squash</button>
-          </div>
+        <span className="font-label-md text-on-surface-variant">Sport Type</span>
+        <div className="flex flex-wrap gap-2">
+          {courtTypes.map((type) => (
+            <button
+              key={type}
+              onClick={() => updateFilter("courtTypeName", currentCourtType === type ? null : type)}
+              className={`px-3 py-1.5 rounded-full text-label-sm border transition-all ${
+                currentCourtType === type
+                  ? "border-primary bg-primary-container text-on-primary-container font-bold"
+                  : "border-outline-variant text-on-surface-variant hover:bg-surface-container-high"
+              }`}
+            >
+              {type}
+            </button>
+          ))}
         </div>
+      </div>
   
         {/* Price Range */}
         <div className="flex flex-col gap-3">
@@ -60,10 +80,12 @@ export default function SidebarFilters() {
             <button className="py-2 px-3 border border-primary bg-primary/5 text-primary rounded-lg text-label-sm font-bold">Outdoor</button>
           </div>
         </div>
-  
-        <button className="py-3 bg-surface-container-highest text-on-surface-variant font-label-md rounded-xl hover:bg-surface-container-high transition-colors">
-          Reset All Filters
-        </button>
+        <button 
+        onClick={() => setSearchParams({})}
+        className="py-3 bg-surface-container-highest text-on-surface-variant font-label-md rounded-xl hover:bg-surface-container-high transition-colors"
+      >
+        Reset All Filters
+      </button>
       </aside>
     );
   }
