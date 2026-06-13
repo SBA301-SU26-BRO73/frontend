@@ -5,12 +5,15 @@ const navItems = [
   { to: '/docs', label: 'Docs' },
   { to: '/branches', label: 'Branches' },
   { to: '/courts', label: 'Courts' },
+  { to: '/time-slots', label: 'Time Slots' },
 ]
 
 export function MainLayout() {
   const location = useLocation()
   const isManagementPage =
-    location.pathname.startsWith('/branches') || location.pathname.startsWith('/courts')
+    location.pathname.startsWith('/branches') ||
+    location.pathname.startsWith('/courts') ||
+    location.pathname.startsWith('/time-slots')
 
   return (
     <div className="min-h-screen text-slate-900">

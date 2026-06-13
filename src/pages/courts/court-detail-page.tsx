@@ -18,6 +18,7 @@ export function CourtDetailPage() {
   const navigationState = location.state as {
     returnTo?: string
     selectedBranchId?: number
+    focusCourtId?: number
   } | null
   const returnTo = navigationState?.returnTo ?? '/courts'
   const courtId = Number(useParams().courtId)
@@ -35,17 +36,33 @@ export function CourtDetailPage() {
         <div className="flex items-center justify-between gap-4">
           <Link
             to={returnTo}
-            state={{ selectedBranchId: navigationState?.selectedBranchId }}
+            state={{
+              selectedBranchId: navigationState?.selectedBranchId,
+              focusCourtId: navigationState?.focusCourtId ?? court.id,
+            }}
             className="text-sm font-semibold text-[#059669] hover:text-[#047857]"
           >
             Quay lại
           </Link>
           <Link
             to={`/courts/${court.id}/edit`}
-            state={navigationState}
+            state={{
+              ...navigationState,
+              focusCourtId: navigationState?.focusCourtId ?? court.id,
+            }}
             className="inline-flex items-center gap-2 rounded-xl bg-[#10B981] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#059669]"
           >
             <Pencil className="size-4" aria-hidden="true" />Chỉnh sửa
+          </Link>
+        </div>
+
+        <div className="mt-4 flex justify-end">
+          <Link
+            to="/time-slots"
+            state={{ courtId: court.id }}
+            className="rounded-xl border border-emerald-200 bg-white px-4 py-2.5 text-sm font-bold text-[#059669] hover:bg-emerald-50"
+          >
+            Quản lý khung giờ
           </Link>
         </div>
 

@@ -18,7 +18,11 @@ import {
 } from './court-form.utils'
 
 type CourtFormPageProps = { mode: 'create' | 'edit' }
-type CourtNavigationState = { returnTo?: string; selectedBranchId?: number } | null
+type CourtNavigationState = {
+  returnTo?: string
+  selectedBranchId?: number
+  focusCourtId?: number
+} | null
 
 export function CourtFormPage({ mode }: CourtFormPageProps) {
   const location = useLocation()
@@ -41,6 +45,7 @@ export function CourtFormPage({ mode }: CourtFormPageProps) {
         mode="create"
         returnTo={navigationState?.returnTo}
         selectedBranchId={navigationState?.selectedBranchId}
+        focusCourtId={navigationState?.focusCourtId}
       />
     )
   }
@@ -64,6 +69,7 @@ export function CourtFormPage({ mode }: CourtFormPageProps) {
       court={detailQuery.data}
       returnTo={navigationState?.returnTo}
       selectedBranchId={navigationState?.selectedBranchId}
+      focusCourtId={navigationState?.focusCourtId}
     />
   )
 }
@@ -73,11 +79,13 @@ function CourtEditor({
   court,
   returnTo,
   selectedBranchId,
+  focusCourtId,
 }: {
   mode: 'create' | 'edit'
   court?: Court
   returnTo?: string
   selectedBranchId?: number
+  focusCourtId?: number
 }) {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
@@ -102,13 +110,14 @@ function CourtEditor({
     mutationFn: () => isEdit && court
       ? updateCourt(court.id, toUpdateCourtPayload(values))
       : createCourt(toCreateCourtPayload(values)),
-    onSuccess: async () => {
+    onSuccess: async (savedCourt) => {
       await queryClient.invalidateQueries({ queryKey: ['courts'] })
       navigate(returnTo ?? '/courts', {
         replace: true,
         state: {
           successMessage: isEdit ? 'Cập nhật sân thành công.' : 'Tạo sân thành công.',
           selectedBranchId,
+          focusCourtId: focusCourtId ?? savedCourt.id,
         },
       })
     },
@@ -160,7 +169,7 @@ function CourtEditor({
       <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
         <Link
           to={returnTo ?? '/courts'}
-          state={{ selectedBranchId }}
+          state={{ selectedBranchId, focusCourtId: focusCourtId ?? court?.id }}
           className="text-sm font-semibold text-[#059669] hover:text-[#047857]"
         >
           Quay lại

@@ -74,6 +74,7 @@ export function CourtListPage() {
             <p className="mt-2 text-sm text-[#6B7280]">Quản lý sân ở tất cả branch, loại sân và trạng thái vận hành.</p>
           </div>
           <div className="flex gap-3">
+            <Link to="/time-slots" className="rounded-xl border border-emerald-200 bg-white px-4 py-3 text-sm font-bold text-[#059669] hover:bg-emerald-50">Khung giờ</Link>
             <Link to="/branches" className="rounded-xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm font-bold text-[#374151] hover:border-[#10B981] hover:text-[#059669]">Quản lý branch</Link>
             <Link to="/courts/new" className="inline-flex items-center gap-2 rounded-xl bg-[#10B981] px-4 py-3 text-sm font-bold text-white shadow-sm hover:bg-[#059669]">
               <Plus className="size-5" aria-hidden="true" /> Thêm sân

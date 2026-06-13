@@ -9,6 +9,9 @@ import { CourtFormPage } from '@/pages/courts/court-form-page'
 import { CourtListPage } from '@/pages/courts/court-list-page'
 import { HomePage } from '@/pages/home/home-page'
 import { NotFoundPage } from '@/pages/not-found/not-found-page'
+import { TimeSlotDetailPage } from '@/pages/time-slots/time-slot-detail-page'
+import { TimeSlotFormPage } from '@/pages/time-slots/time-slot-form-page'
+import { TimeSlotListPage } from '@/pages/time-slots/time-slot-list-page'
 
 export const router = createBrowserRouter([
   {
@@ -50,6 +53,22 @@ export const router = createBrowserRouter([
       {
         path: 'courts/:courtId/edit',
         element: <CourtFormPage mode="edit" />,
+      },
+      {
+        path: 'time-slots',
+        element: <TimeSlotListPage />,
+      },
+      {
+        path: 'time-slots/new',
+        element: <TimeSlotFormPage mode="create" />,
+      },
+      {
+        path: 'time-slots/:timeSlotId',
+        element: <TimeSlotDetailPage />,
+      },
+      {
+        path: 'time-slots/:timeSlotId/edit',
+        element: <TimeSlotFormPage mode="edit" />,
       },
     ],
   },

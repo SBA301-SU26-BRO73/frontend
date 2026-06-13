@@ -7,6 +7,7 @@ import {
 } from '@tanstack/react-query'
 import {
   Clock,
+  Clock3,
   Eye,
   MapPin,
   Pencil,
@@ -34,6 +35,7 @@ const sortOptions: Array<{ value: BranchSortField; label: string }> = [
 type LocationState = {
   successMessage?: string
   selectedBranchId?: number
+  focusCourtId?: number
 } | null
 
 function formatTime(time: string) {
@@ -49,6 +51,7 @@ export function BranchListPage() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const successMessage = (location.state as LocationState)?.successMessage
+  const focusCourtId = (location.state as LocationState)?.focusCourtId
   const [page, setPage] = useState(0)
   const [size, setSize] = useState(10)
   const [sortField, setSortField] = useState<BranchSortField>('name')
@@ -337,6 +340,7 @@ export function BranchListPage() {
             <CourtList
               key={selectedBranch.id}
               branchId={selectedBranch.id}
+              focusCourtId={focusCourtId}
               courts={courts}
               isLoading={courtQuery.isPending}
               error={courtQuery.error}
@@ -426,6 +430,7 @@ function BranchDetailCard({ branch, courtCount }: BranchDetailCardProps) {
 
 type CourtListProps = {
   branchId: number
+  focusCourtId?: number
   courts: Court[]
   isLoading: boolean
   error: unknown
@@ -448,6 +453,7 @@ const courtStatusStyles = {
 
 function CourtList({
   branchId,
+  focusCourtId,
   courts,
   isLoading,
   error,
@@ -455,10 +461,16 @@ function CourtList({
   onRetry,
   onDelete,
 }: CourtListProps) {
+  const focusedCourtIndex = focusCourtId
+    ? courts.findIndex((court) => court.id === focusCourtId)
+    : -1
   const [visibleCount, setVisibleCount] = useState(10)
+  const focusedCourtVisibleCount =
+    focusedCourtIndex >= 0 ? Math.ceil((focusedCourtIndex + 1) / 10) * 10 : 10
+  const effectiveVisibleCount = Math.max(visibleCount, focusedCourtVisibleCount)
   const loadMoreRef = useRef<HTMLDivElement>(null)
-  const visibleCourts = courts.slice(0, visibleCount)
-  const hasMore = visibleCount < courts.length
+  const visibleCourts = courts.slice(0, effectiveVisibleCount)
+  const hasMore = effectiveVisibleCount < courts.length
 
   useEffect(() => {
     const target = loadMoreRef.current
@@ -467,7 +479,9 @@ function CourtList({
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setVisibleCount((current) => Math.min(current + 10, courts.length))
+          setVisibleCount((current) =>
+            Math.min(Math.max(current, effectiveVisibleCount) + 10, courts.length),
+          )
         }
       },
       { rootMargin: '160px 0px' },
@@ -475,7 +489,15 @@ function CourtList({
 
     observer.observe(target)
     return () => observer.disconnect()
-  }, [courts.length, hasMore])
+  }, [courts.length, effectiveVisibleCount, hasMore])
+
+  useEffect(() => {
+    if (!focusCourtId) return
+    document.getElementById(`branch-court-${focusCourtId}`)?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+    })
+  }, [courts.length, focusCourtId])
 
   return (
     <section className="mt-8" aria-labelledby="court-list-title">
@@ -519,7 +541,11 @@ function CourtList({
       ) : (
         <div className="mt-4 divide-y divide-[#E5E7EB] rounded-2xl bg-white px-5 shadow-sm">
           {visibleCourts.map((court) => (
-            <article key={court.id} className="flex items-center gap-4 py-6">
+            <article
+              id={`branch-court-${court.id}`}
+              key={court.id}
+              className="flex scroll-mt-6 items-center gap-4 py-6"
+            >
               {court.imageUrl ? (
                 <img
                   src={court.imageUrl}
@@ -556,8 +582,25 @@ function CourtList({
               </div>
               <div className="flex shrink-0 items-center gap-1">
                 <Link
+                  to="/time-slots"
+                  state={{
+                    courtId: court.id,
+                    returnTo: '/branches',
+                    returnState: { selectedBranchId: branchId, focusCourtId: court.id },
+                  }}
+                  aria-label={`Quản lý khung giờ ${court.name}`}
+                  title="Quản lý khung giờ"
+                  className="grid size-10 place-items-center rounded-full text-[#6B7280] hover:bg-emerald-50 hover:text-[#059669]"
+                >
+                  <Clock3 aria-hidden="true" className="size-5" />
+                </Link>
+                <Link
                   to={`/courts/${court.id}`}
-                  state={{ returnTo: '/branches', selectedBranchId: branchId }}
+                  state={{
+                    returnTo: '/branches',
+                    selectedBranchId: branchId,
+                    focusCourtId: court.id,
+                  }}
                   aria-label={`Xem chi tiết ${court.name}`}
                   title="Xem chi tiết"
                   className="grid size-10 place-items-center rounded-full text-[#6B7280] hover:bg-emerald-50 hover:text-[#059669]"
@@ -566,7 +609,11 @@ function CourtList({
                 </Link>
                 <Link
                   to={`/courts/${court.id}/edit`}
-                  state={{ returnTo: '/branches', selectedBranchId: branchId }}
+                  state={{
+                    returnTo: '/branches',
+                    selectedBranchId: branchId,
+                    focusCourtId: court.id,
+                  }}
                   aria-label={`Chỉnh sửa ${court.name}`}
                   title="Chỉnh sửa"
                   className="grid size-10 place-items-center rounded-full text-[#6B7280] hover:bg-emerald-50 hover:text-[#059669]"
