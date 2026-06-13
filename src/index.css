@@ -3,9 +3,7 @@
 :root {
   font-family: "Be Vietnam Pro", "Segoe UI", sans-serif;
   color: #0f172a;
-  background:
-    radial-gradient(circle at top, rgba(249, 115, 22, 0.18), transparent 30%),
-    linear-gradient(180deg, #fff7ed 0%, #ffffff 46%, #f8fafc 100%);
+  background: #f5f6f8;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -29,10 +27,12 @@ body {
 button,
 a {
   transition:
-    color 150ms ease,
-    background-color 150ms ease,
-    border-color 150ms ease,
-    opacity 150ms ease;
+    color 200ms ease,
+    background-color 200ms ease,
+    border-color 200ms ease,
+    opacity 200ms ease,
+    transform 200ms ease,
+    box-shadow 200ms ease;
 }
 
 #root {

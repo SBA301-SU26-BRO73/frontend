@@ -1,14 +1,18 @@
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
 
 const navItems = [
   { to: '/', label: 'Home' },
   { to: '/docs', label: 'Docs' },
+  { to: '/branches', label: 'Branches' },
 ]
 
 export function MainLayout() {
+  const location = useLocation()
+  const isBranchManagementPage = location.pathname.startsWith('/branches')
+
   return (
     <div className="min-h-screen text-slate-900">
-      <header className="sticky top-0 z-10 border-b border-slate-200/80 bg-white/80 backdrop-blur">
+      {!isBranchManagementPage && <header className="sticky top-0 z-10 border-b border-slate-200/80 bg-white/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-orange-600">
@@ -31,7 +35,7 @@ export function MainLayout() {
             ))}
           </nav>
         </div>
-      </header>
+      </header>}
 
       <main>
         <Outlet />
