@@ -11,7 +11,7 @@ export default function SidebarFilters() {
   const currentCourtType = searchParams.get("courtTypeName");
   const courtTypes = ["Pickleball", "Tennis", "Badminton", "Squash"];
     return (
-      <aside className="hidden lg:flex flex-col w-64 shrink-0 gap-stack-lg sticky top-24 h-fit sidebar-mask">
+      <aside className="hidden lg:flex flex-col w-64 shrink-0 gap-stack-lg sticky top-24 h-fit mb-24 max-h-[calc(100vh-8rem)] overflow-y-auto [&::-webkit-scrollbar]:hidden sidebar-mask">
         <div className="flex flex-col gap-1">
           <h3 className="font-headline-md text-headline-md leading-tight">Filters</h3>
           <p className="text-body-sm text-on-surface-variant">Refine your court search</p>
