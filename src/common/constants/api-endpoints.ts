@@ -5,6 +5,7 @@ export const API_PREFIXES = {
   orders: '/orders',
   categories: '/categories',
   branches: '/branches',
+  courts: '/courts',
 } as const
 
 function joinEndpoint(...segments: Array<string | number>) {
@@ -39,5 +40,9 @@ export const API_ENDPOINTS = {
   branches: {
     list: joinEndpoint(API_PREFIXES.branches),
     detail: (id: string | number) => joinEndpoint(API_PREFIXES.branches, id),
+  },
+  courts: {
+    list: joinEndpoint(API_PREFIXES.courts),
+    detail: (id: string | number) => joinEndpoint(API_PREFIXES.courts, id),
   },
 } as const

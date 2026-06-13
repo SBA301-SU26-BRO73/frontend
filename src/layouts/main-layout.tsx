@@ -4,15 +4,17 @@ const navItems = [
   { to: '/', label: 'Home' },
   { to: '/docs', label: 'Docs' },
   { to: '/branches', label: 'Branches' },
+  { to: '/courts', label: 'Courts' },
 ]
 
 export function MainLayout() {
   const location = useLocation()
-  const isBranchManagementPage = location.pathname.startsWith('/branches')
+  const isManagementPage =
+    location.pathname.startsWith('/branches') || location.pathname.startsWith('/courts')
 
   return (
     <div className="min-h-screen text-slate-900">
-      {!isBranchManagementPage && <header className="sticky top-0 z-10 border-b border-slate-200/80 bg-white/80 backdrop-blur">
+      {!isManagementPage && <header className="sticky top-0 z-10 border-b border-slate-200/80 bg-white/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-orange-600">
