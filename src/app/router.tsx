@@ -5,7 +5,8 @@ import { NotFoundPage } from '@/pages/not-found/not-found-page'
 import MainLayout from '@/layouts/main-layout'
 import HomePage from '@/pages/home/home-page'
 import BranchListPage from '@/pages/branch/branch-list-page'
-import BranchDetailPage from '@/pages/branch/branch-detail-page' // Chuẩn bị sẵn cho trang chi tiết sau này
+import BranchDetailPage from '@/pages/branch/branch-detail-page'
+import SlotBookingPage from '@/pages/slot-booking/slot-booking-page'
 
 export const router = createBrowserRouter([
   {
@@ -21,6 +22,10 @@ export const router = createBrowserRouter([
         element: <DocsPage />,
       },
       {
+        path: 'slot-booking',
+        element: <SlotBookingPage />,
+      },
+      {
         path: 'branches',
         children: [
           {
@@ -29,7 +34,7 @@ export const router = createBrowserRouter([
           },
           {
             path: ':id',
-            element: <BranchDetailPage />, // Đã mở comment
+            element: <BranchDetailPage />,
           },
         ]
       },

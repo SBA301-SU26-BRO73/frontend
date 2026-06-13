@@ -67,4 +67,18 @@ export const branchApi = {
     const response = await axiosClient.get<ApiResponse<Branch>>(`/branches/${id}`);
     return response.data.data;
   },
+
+  getDailyCourtSchedule: async (courtId: number, date: string): Promise<DailySlotResponse[]> => {
+    const response = await axiosClient.get<ApiResponse<DailySlotResponse[]>>(`/courts/${courtId}/daily-schedule`, {
+      params: { date }
+    });
+    return response.data.data;
+  },
 };
+
+export interface DailySlotResponse {
+  startTime: string;
+  endTime: string;
+  price: number;
+  status: 'EXPIRED' | 'AVAILABLE' | 'BOOKED';
+}
