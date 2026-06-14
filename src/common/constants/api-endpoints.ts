@@ -4,6 +4,8 @@ export const API_PREFIXES = {
   products: '/products',
   orders: '/orders',
   categories: '/categories',
+  courtTypes: '/court-types',
+  plans: '/subscription-plans',
 } as const
 
 function joinEndpoint(...segments: Array<string | number>) {
@@ -26,6 +28,22 @@ export const API_ENDPOINTS = {
   users: {
     list: joinEndpoint(API_PREFIXES.users),
     detail: (id: string | number) => joinEndpoint(API_PREFIXES.users, id),
+    approve: (id: string | number) => joinEndpoint(API_PREFIXES.users, id, 'approve'),
+    reject: (id: string | number) => joinEndpoint(API_PREFIXES.users, id, 'reject'),
+    lock: (id: string | number) => joinEndpoint(API_PREFIXES.users, id, 'lock'),
+    unlock: (id: string | number) => joinEndpoint(API_PREFIXES.users, id, 'unlock'),
+  },
+  courtTypes: {
+    list: joinEndpoint(API_PREFIXES.courtTypes),
+    detail: (id: string | number) => joinEndpoint(API_PREFIXES.courtTypes, id),
+    update: (id: string | number) => joinEndpoint(API_PREFIXES.courtTypes, id),
+    delete: (id: string | number) => joinEndpoint(API_PREFIXES.courtTypes, id),
+  },
+  plans: {
+    list: joinEndpoint(API_PREFIXES.plans),
+    detail: (id: string | number) => joinEndpoint(API_PREFIXES.plans, id),
+    update: (id: string | number) => joinEndpoint(API_PREFIXES.plans, id),
+    delete: (id: string | number) => joinEndpoint(API_PREFIXES.plans, id),
   },
   products: {
     list: joinEndpoint(API_PREFIXES.products),
