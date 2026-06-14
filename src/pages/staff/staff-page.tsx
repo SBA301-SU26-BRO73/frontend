@@ -30,15 +30,17 @@ export function StaffPage() {
   const [deletingId, setDeletingId] = useState<number | null>(null)
 
   const PAGE_SIZE = 20
+  // Staff per branch is small; fetch the whole branch once so search,
+  // status counts and pagination all stay consistent client-side.
+  const FETCH_SIZE = 500
 
   const { data, isLoading, refetch } = useQuery({
-    queryKey: ['staff', BRANCH_ID, page],
-    queryFn: () => getStaffByBranch(BRANCH_ID, page, PAGE_SIZE),
+    queryKey: ['staff', BRANCH_ID],
+    queryFn: () => getStaffByBranch(BRANCH_ID, 0, FETCH_SIZE),
   })
 
   const allStaff = data?.content ?? []
-  const totalElements = data?.totalElements ?? 0
-  const totalPages = data?.totalPages ?? 1
+  const totalElements = data?.totalElements ?? allStaff.length
 
   const deleteMutation = useMutation({
     mutationFn: deleteStaff,
@@ -48,7 +50,7 @@ export function StaffPage() {
     },
   })
 
-  // Client-side filter (search + status)
+  // Client-side filter (search + status) over the full branch list
   const filtered = allStaff.filter((s) => {
     if (statusFilter !== 'all' && s.userStatus !== statusFilter) return false
     if (!q.trim()) return true
@@ -56,8 +58,23 @@ export function StaffPage() {
     return s.email.toLowerCase().includes(t) || String(s.id).includes(t)
   })
 
+  // Paginate the filtered set client-side
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const safePage = Math.min(page, totalPages - 1)
+  const pageRows = filtered.slice(safePage * PAGE_SIZE, safePage * PAGE_SIZE + PAGE_SIZE)
+
   function countByStatus(status: UserStatus) {
     return allStaff.filter((s) => s.userStatus === status).length
+  }
+
+  function changeStatusFilter(next: StatusFilter) {
+    setStatusFilter(next)
+    setPage(0)
+  }
+
+  function changeQuery(next: string) {
+    setQ(next)
+    setPage(0)
   }
 
   function handleEdit(s: StaffResponse) {
@@ -74,8 +91,8 @@ export function StaffPage() {
     setEditingStaff(null)
   }
 
-  const startRow = totalElements === 0 ? 0 : page * PAGE_SIZE + 1
-  const endRow = Math.min((page + 1) * PAGE_SIZE, totalElements)
+  const startRow = filtered.length === 0 ? 0 : safePage * PAGE_SIZE + 1
+  const endRow = Math.min((safePage + 1) * PAGE_SIZE, filtered.length)
 
   return (
     <div className="p-6">
@@ -114,7 +131,7 @@ export function StaffPage() {
         <div className="flex flex-wrap items-center gap-3 border-b border-slate-100 px-4 py-3">
           <SearchInput
             value={q}
-            onChange={setQ}
+            onChange={changeQuery}
             placeholder="Tìm theo email…"
           />
 
@@ -128,7 +145,7 @@ export function StaffPage() {
               return (
                 <button
                   key={tab.id}
-                  onClick={() => setStatusFilter(tab.id)}
+                  onClick={() => changeStatusFilter(tab.id)}
                   className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors ${
                     statusFilter === tab.id
                       ? 'bg-white text-slate-800 shadow-sm'
@@ -149,7 +166,7 @@ export function StaffPage() {
 
         {/* Table */}
         <StaffTable
-          staff={filtered}
+          staff={pageRows}
           isLoading={isLoading}
           onEdit={handleEdit}
           onDelete={handleDelete}
@@ -160,25 +177,25 @@ export function StaffPage() {
         />
 
         {/* Pagination */}
-        {!isLoading && totalElements > 0 && (
+        {!isLoading && filtered.length > 0 && (
           <div className="flex items-center justify-between border-t border-slate-100 px-4 py-3 text-xs text-slate-500">
             <span>
-              Hiển thị {startRow}–{endRow} / {totalElements}
+              Hiển thị {startRow}–{endRow} / {filtered.length}
             </span>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setPage((p) => Math.max(0, p - 1))}
-                disabled={page === 0}
+                disabled={safePage === 0}
                 className="rounded-md border border-slate-200 p-1 hover:bg-slate-50 disabled:opacity-40"
               >
                 <ChevronLeft size={13} />
               </button>
               <span className="font-mono">
-                {page + 1} / {totalPages}
+                {safePage + 1} / {totalPages}
               </span>
               <button
                 onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
-                disabled={page >= totalPages - 1}
+                disabled={safePage >= totalPages - 1}
                 className="rounded-md border border-slate-200 p-1 hover:bg-slate-50 disabled:opacity-40"
               >
                 <ChevronRight size={13} />
