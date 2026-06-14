@@ -16,7 +16,7 @@ export function useLogin() {
       if (res.data) {
         setAuth(res.data)
         const decoded = decodeJwt(res.data.accessToken)
-        navigate(decoded.role === 'SUPER_ADMIN' ? '/admin' : '/')
+        navigate(decoded.role === 'SUPER_ADMIN' ? '/super-admin' : '/')
       }
     },
   })

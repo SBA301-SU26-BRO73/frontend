@@ -7,12 +7,12 @@ import { useUsers } from '@/hooks/use-users'
 
 const NAV = [
   { section: 'Tổng quan' },
-  { to: '/admin', label: 'Dashboard', icon: Grid2X2, end: true },
+  { to: '/super-admin', label: 'Dashboard', icon: Grid2X2, end: true },
   { section: 'Quản lý Admin' },
-  { to: '/admin/pending', label: 'Chờ duyệt', icon: Inbox, badge: true },
+  { to: '/super-admin/pending', label: 'Chờ duyệt', icon: Inbox, badge: true },
   { section: 'Cấu hình hệ thống' },
-  { to: '/admin/court-types', label: 'Loại sân', icon: Layers },
-  { to: '/admin/plans', label: 'Gói đăng ký', icon: Tag },
+  { to: '/super-admin/court-types', label: 'Loại sân', icon: Layers },
+  { to: '/super-admin/plans', label: 'Gói đăng ký', icon: Tag },
 ] as const
 
 export function DashboardLayout() {
