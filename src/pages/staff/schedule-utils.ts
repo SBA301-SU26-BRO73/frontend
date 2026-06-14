@@ -56,8 +56,9 @@ export const STATUS_STYLES: Record<
     cta: 'CHECK IN →',
   },
   CHECKED_IN: {
-    block: 'bg-green-50 border-green-200 text-green-900',
+    block: 'bg-green-50 border-green-200 text-green-900 hover:bg-green-100',
     label: 'Playing',
+    cta: 'CHECK OUT →',
   },
   COMPLETED: {
     block: 'bg-slate-100 border-slate-200 text-slate-500',

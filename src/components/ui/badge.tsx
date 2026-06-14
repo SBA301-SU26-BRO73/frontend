@@ -2,12 +2,14 @@ const toneClasses = {
   green: 'bg-green-100 text-green-800',
   gray: 'bg-slate-100 text-slate-600',
   red: 'bg-red-100 text-red-700',
+  amber: 'bg-amber-100 text-amber-800',
 } as const
 
 const dotClasses = {
   green: 'bg-green-500',
   gray: 'bg-slate-400',
   red: 'bg-red-500',
+  amber: 'bg-amber-500',
 } as const
 
 type Tone = keyof typeof toneClasses

@@ -9,6 +9,8 @@ import { NotFoundPage } from '@/pages/not-found/not-found-page'
 import { StaffPage } from '@/pages/staff/staff-page'
 import { StaffSchedulePage } from '@/pages/staff/staff-schedule-page'
 import { StaffCheckInPage } from '@/pages/staff/staff-check-in-page'
+import { StaffWalkInPage } from '@/pages/staff/staff-walk-in-page'
+import { StaffCheckoutPage } from '@/pages/staff/staff-checkout-page'
 
 export const router = createBrowserRouter([
   {
@@ -50,6 +52,14 @@ export const router = createBrowserRouter([
       {
         path: 'check-in',
         element: <StaffCheckInPage />,
+      },
+      {
+        path: 'walk-in',
+        element: <StaffWalkInPage />,
+      },
+      {
+        path: 'checkout/:bookingId',
+        element: <StaffCheckoutPage />,
       },
     ],
   },

@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Calendar, Activity, LayoutGrid, ScanLine } from 'lucide-react'
+import { Calendar, Activity, LayoutGrid, ScanLine, PlusCircle } from 'lucide-react'
 
 import { useStaffSession } from '@/context/staff-session'
 import { useTodaySchedule } from '@/hooks/staff/use-today-schedule'
@@ -72,20 +72,33 @@ export function StaffSchedulePage() {
         />
       </div>
 
-      {/* CTA */}
-      <Link
-        to="/staff/check-in"
-        className="flex items-center gap-3 rounded-xl bg-green-600 px-5 py-4 text-white shadow-sm transition-colors hover:bg-green-700"
-      >
-        <ScanLine size={22} />
-        <div className="leading-tight">
-          <div className="text-base font-semibold">Scan QR to check in</div>
-          <div className="text-sm text-green-100">
-            Scan a booking QR or enter the code manually
+      {/* CTAs */}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <Link
+          to="/staff/check-in"
+          className="flex items-center gap-3 rounded-xl bg-green-600 px-5 py-4 text-white shadow-sm transition-colors hover:bg-green-700"
+        >
+          <ScanLine size={22} />
+          <div className="leading-tight">
+            <div className="text-base font-semibold">Scan QR to check in</div>
+            <div className="text-sm text-green-100">
+              Scan a booking QR or enter the code manually
+            </div>
           </div>
-        </div>
-        <span className="ml-auto text-xl">→</span>
-      </Link>
+          <span className="ml-auto text-xl">→</span>
+        </Link>
+        <Link
+          to="/staff/walk-in"
+          className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-5 py-4 text-slate-800 shadow-sm transition-colors hover:bg-slate-50"
+        >
+          <PlusCircle size={22} className="text-green-600" />
+          <div className="leading-tight">
+            <div className="text-base font-semibold">New walk-in booking</div>
+            <div className="text-sm text-slate-500">Create a booking at the counter</div>
+          </div>
+          <span className="ml-auto text-xl text-slate-400">→</span>
+        </Link>
+      </div>
 
       {/* Legend */}
       <div className="flex items-center gap-4 text-xs text-slate-500">
@@ -123,7 +136,13 @@ export function StaffSchedulePage() {
           schedule={schedule}
           openMin={openMin}
           rows={rows}
-          onBookingClick={() => navigate('/staff/check-in')}
+          onBookingClick={(item) => {
+            if (item.status === 'CHECKED_IN') {
+              navigate(`/staff/checkout/${item.bookingId}`, { state: item })
+            } else {
+              navigate('/staff/check-in')
+            }
+          }}
         />
       )}
     </div>

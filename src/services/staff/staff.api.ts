@@ -9,6 +9,12 @@ import type {
   StaffCheckinRequest,
   StaffCheckinResponse,
 } from '@/types/staff'
+import type {
+  WalkInBookingRequest,
+  WalkInBookingResponse,
+  StaffCheckoutRequest,
+  StaffCheckoutResponse,
+} from '@/types/booking'
 
 export async function getStaffByBranch(
   branchId: number,
@@ -68,5 +74,21 @@ export async function checkIn(
   payload: StaffCheckinRequest,
 ): Promise<StaffCheckinResponse> {
   const { data } = await axiosClient.post(API_ENDPOINTS.staff.checkin, payload)
+  return data
+}
+
+/** Create a walk-in booking at the counter (status auto-set to CHECKED_IN). */
+export async function createWalkInBooking(
+  payload: WalkInBookingRequest,
+): Promise<WalkInBookingResponse> {
+  const { data } = await axiosClient.post(API_ENDPOINTS.staff.walkInBooking, payload)
+  return data
+}
+
+/** Complete a booking — transitions CHECKED_IN → COMPLETED. */
+export async function staffCheckout(
+  payload: StaffCheckoutRequest,
+): Promise<StaffCheckoutResponse> {
+  const { data } = await axiosClient.post(API_ENDPOINTS.staff.checkout, payload)
   return data
 }
