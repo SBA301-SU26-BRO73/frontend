@@ -54,9 +54,10 @@ export function LoginPage() {
           <button
             type="button"
             onClick={() => navigate('/auth/role-pick')}
-            className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 mb-5 transition"
+            className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-green-600 mb-5 transition group"
           >
-            ← Đổi vai trò
+            <span className="group-hover:-translate-x-0.5 transition-transform">←</span>
+            <span className="group-hover:underline">Đổi vai trò</span>
           </button>
           {/* Role badge */}
           <div className="flex items-center gap-2.5 px-3.5 py-2.5 mb-5 rounded-xl bg-green-50 border border-green-200/60">

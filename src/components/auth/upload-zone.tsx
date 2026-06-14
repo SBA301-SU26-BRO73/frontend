@@ -1,5 +1,5 @@
 import { FileText, Image, Upload, X } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 
 interface UploadZoneProps {
   hint?: string
@@ -9,7 +9,6 @@ interface UploadZoneProps {
 }
 
 export function UploadZone({ hint, accept, files, onChange }: UploadZoneProps) {
-  const ref = useRef<HTMLInputElement>(null)
   const [drag, setDrag] = useState(false)
 
   function add(raw: FileList | null) {
@@ -37,7 +36,6 @@ export function UploadZone({ hint, accept, files, onChange }: UploadZoneProps) {
           setDrag(false)
           add(e.dataTransfer.files)
         }}
-        onClick={() => ref.current?.click()}
       >
         <span className="text-slate-400">
           <Upload size={24} />
@@ -47,7 +45,6 @@ export function UploadZone({ hint, accept, files, onChange }: UploadZoneProps) {
         </div>
         <div className="text-xs text-slate-400">{hint ?? 'PNG, JPG, PDF · Tối đa 5MB'}</div>
         <input
-          ref={ref}
           type="file"
           accept={accept}
           multiple

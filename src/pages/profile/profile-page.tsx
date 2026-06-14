@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { Button, Field, Logo, PasswordInput, PwMeter, TextInput } from '@/components/auth/auth-ui'
-import { useAuth } from '@/context/auth-context'
+import { useAuth } from '@/hooks/use-auth-context'
 import type { UserRole } from '@/types/auth'
 
 const ROLE_LABEL: Record<UserRole, string> = {

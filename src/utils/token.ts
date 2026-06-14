@@ -30,8 +30,9 @@ export function decodeJwt(token: string): AuthUser {
 
 export const tokenStorage = {
   setTokens(tokens: TokenResponse): void {
-    const days = Math.ceil(tokens.expiresIn / 86400000)
-    setCookie(ACCESS_KEY, tokens.accessToken, days || 1)
+    const msLeft = tokens.expiresIn - Date.now()
+    const days = msLeft > 0 ? Math.ceil(msLeft / 86400000) : 1
+    setCookie(ACCESS_KEY, tokens.accessToken, days)
     setCookie(REFRESH_KEY, tokens.refreshToken, 7)
   },
 

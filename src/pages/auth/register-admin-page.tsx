@@ -49,8 +49,8 @@ export function RegisterAdminPage() {
     data.append('email', f.email)
     data.append('phone', f.phone)
     data.append('password', f.password)
-    docs.forEach((d) => data.append('documents', d))
-    photos.forEach((p) => data.append('photos', p))
+    docs.forEach((d) => data.append('legalDocuments', d))
+    photos.forEach((p) => data.append('courtImages', p))
     register.mutate(data)
   }
 
@@ -59,34 +59,38 @@ export function RegisterAdminPage() {
       <div className="grid md:grid-cols-[46fr_54fr] h-screen overflow-hidden bg-white">
         <HeroPanel variant="admin" />
         <div className="overflow-y-auto flex items-center justify-center p-6">
-          <div className="w-full max-w-sm text-center">
-            <div className="mb-6 flex justify-center">
+          <div className="w-full max-w-sm">
+            <div className="mb-8">
               <Logo />
             </div>
-            <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-              <CheckCircle size={32} className="text-green-600" />
+            {/* Success card */}
+            <div className="rounded-2xl border border-slate-100 bg-slate-50 p-8 text-center">
+              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-5">
+                <CheckCircle size={30} className="text-green-600" />
+              </div>
+              <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight mb-2">
+                Đã gửi đăng ký!
+              </h1>
+              <p className="text-sm text-slate-500 leading-relaxed mb-5">
+                Hồ sơ đang được FCourt xem xét.<br />Kết quả sẽ được thông báo qua:
+              </p>
+              <div className="flex justify-center gap-2.5 mb-5">
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-xl bg-blue-50 text-blue-700 border border-blue-200">
+                  <Mail size={13} /> Email
+                </span>
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-xl bg-green-50 text-green-700 border border-green-200">
+                  <Phone size={13} /> Zalo / SĐT
+                </span>
+              </div>
+              <div className="text-xs text-slate-400 pb-6 border-b border-slate-200 mb-6">
+                Thời gian xét duyệt: <b className="text-slate-600">1–3 ngày làm việc</b>
+              </div>
+              <Link to="/auth/login?role=admin">
+                <Button block variant="ghost">
+                  Quay lại đăng nhập
+                </Button>
+              </Link>
             </div>
-            <h1 className="text-2xl font-extrabold text-slate-900 mb-2">Đã gửi đăng ký!</h1>
-            <p className="text-sm text-slate-500 mb-1">
-              Hồ sơ đang được FCourt xem xét. Kết quả sẽ được thông báo tới:
-            </p>
-            <div className="flex justify-center gap-2 my-4">
-              <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 border border-blue-200">
-                <Mail size={12} /> Email
-              </span>
-              <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-green-50 text-green-700 border border-green-200">
-                <Phone size={12} /> Zalo / SĐT
-              </span>
-            </div>
-            <p className="text-xs text-slate-400 mb-6">
-              Thời gian xét duyệt:{' '}
-              <b className="text-slate-600">1–3 ngày làm việc</b>
-            </p>
-            <Link to="/auth/login?role=admin">
-              <Button block variant="ghost">
-                Quay lại đăng nhập
-              </Button>
-            </Link>
           </div>
         </div>
       </div>
@@ -108,9 +112,10 @@ export function RegisterAdminPage() {
           </div>
           <Link
             to="/auth/login?role=admin"
-            className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 mb-5 transition"
+            className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-green-600 mb-5 transition group"
           >
-            ← Quay lại đăng nhập
+            <span className="group-hover:-translate-x-0.5 transition-transform">←</span>
+            <span className="group-hover:underline">Quay lại đăng nhập</span>
           </Link>
           <div className="mb-5">
             <div className="text-xs font-semibold text-green-600 uppercase tracking-widest mb-1">

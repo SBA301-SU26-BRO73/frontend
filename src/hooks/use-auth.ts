@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 
-import { useAuth } from '@/context/auth-context'
+import { useAuth } from '@/hooks/use-auth-context'
 import { login, registerCourtOwner, registerCustomer } from '@/services/auth/auth.service'
 import type { LoginRequest, RegisterCustomerRequest } from '@/types/auth'
 

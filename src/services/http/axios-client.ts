@@ -22,7 +22,8 @@ axiosClient.interceptors.request.use((config) => {
 axiosClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const isAuthEndpoint = error.config?.url?.includes('/auth/')
+    if (error.response?.status === 401 && !isAuthEndpoint) {
       tokenStorage.clear()
       window.location.href = '/auth/login'
     }

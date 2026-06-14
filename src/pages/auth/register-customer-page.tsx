@@ -73,9 +73,10 @@ export function RegisterCustomerPage() {
           </div>
           <Link
             to="/auth/login?role=customer"
-            className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 mb-5 transition"
+            className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-green-600 mb-5 transition group"
           >
-            ← Quay lại đăng nhập
+            <span className="group-hover:-translate-x-0.5 transition-transform">←</span>
+            <span className="group-hover:underline">Quay lại đăng nhập</span>
           </Link>
           <div className="mb-5">
             <div className="text-xs font-semibold text-green-600 uppercase tracking-widest mb-1">

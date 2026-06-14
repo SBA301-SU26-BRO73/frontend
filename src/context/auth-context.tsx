@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, type PropsWithChildren } from 'react'
+import { createContext, useState, type PropsWithChildren } from 'react'
 
 import type { AuthUser, TokenResponse } from '@/types/auth'
 import { decodeJwt, tokenStorage } from '@/utils/token'
@@ -10,7 +10,8 @@ interface AuthContextValue {
   clearAuth: () => void
 }
 
-const AuthContext = createContext<AuthContextValue | null>(null)
+export type { AuthContextValue }
+export const AuthContext = createContext<AuthContextValue | null>(null)
 
 export function AuthProvider({ children }: PropsWithChildren) {
   const [user, setUser] = useState<AuthUser | null>(() => tokenStorage.getUser())
@@ -34,8 +35,3 @@ export function AuthProvider({ children }: PropsWithChildren) {
   )
 }
 
-export function useAuth(): AuthContextValue {
-  const ctx = useContext(AuthContext)
-  if (!ctx) throw new Error('useAuth must be used within AuthProvider')
-  return ctx
-}
