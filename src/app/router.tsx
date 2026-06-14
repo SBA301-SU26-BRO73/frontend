@@ -4,6 +4,7 @@ import { MainLayout } from '@/layouts/main-layout'
 import { DocsPage } from '@/pages/docs/docs-page'
 import { HomePage } from '@/pages/home/home-page'
 import { NotFoundPage } from '@/pages/not-found/not-found-page'
+import {AdminBookingPage} from "@/pages/admin/AdminBookingPage.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -23,5 +24,14 @@ export const router = createBrowserRouter([
   {
     path: '*',
     element: <NotFoundPage />,
+  },
+  {
+    path: 'admin',
+    children: [
+      {
+        path: 'bookings',
+        element: <AdminBookingPage />,
+      },
+    ],
   },
 ])
