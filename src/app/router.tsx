@@ -2,10 +2,13 @@ import { createBrowserRouter, Navigate } from 'react-router-dom'
 
 import { AdminLayout } from '@/layouts/admin-layout'
 import { MainLayout } from '@/layouts/main-layout'
+import { StaffLayout } from '@/layouts/staff-layout'
 import { DocsPage } from '@/pages/docs/docs-page'
 import { HomePage } from '@/pages/home/home-page'
 import { NotFoundPage } from '@/pages/not-found/not-found-page'
 import { StaffPage } from '@/pages/staff/staff-page'
+import { StaffSchedulePage } from '@/pages/staff/staff-schedule-page'
+import { StaffCheckInPage } from '@/pages/staff/staff-check-in-page'
 
 export const router = createBrowserRouter([
   {
@@ -33,6 +36,20 @@ export const router = createBrowserRouter([
       {
         path: 'staff',
         element: <StaffPage />,
+      },
+    ],
+  },
+  {
+    path: '/staff',
+    element: <StaffLayout />,
+    children: [
+      {
+        index: true,
+        element: <StaffSchedulePage />,
+      },
+      {
+        path: 'check-in',
+        element: <StaffCheckInPage />,
       },
     ],
   },

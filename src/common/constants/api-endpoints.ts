@@ -7,6 +7,7 @@ export const API_PREFIXES = {
   staff: '/v1/staff',
   staffBranches: '/v1/branches', // StaffController: /api/v1/branches/{id}/staff
   branches: '/branches',         // BranchController: /api/branches
+  courts: '/courts',             // CourtController: /api/courts
 } as const
 
 function joinEndpoint(...segments: Array<string | number>) {
@@ -45,8 +46,14 @@ export const API_ENDPOINTS = {
     create: joinEndpoint(API_PREFIXES.staff),
     update: (id: number) => joinEndpoint(API_PREFIXES.staff, id),
     delete: (id: number) => joinEndpoint(API_PREFIXES.staff, id),
+    schedule: joinEndpoint(API_PREFIXES.staff, 'schedule'),
+    checkin: joinEndpoint(API_PREFIXES.staff, 'checkin'),
   },
   branches: {
     list: joinEndpoint(API_PREFIXES.branches),
+    detail: (id: number) => joinEndpoint(API_PREFIXES.branches, id),
+  },
+  courts: {
+    list: joinEndpoint(API_PREFIXES.courts),
   },
 } as const
