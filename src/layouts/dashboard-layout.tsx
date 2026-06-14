@@ -96,7 +96,7 @@ export function DashboardLayout() {
             </div>
             <div className="flex-1 min-w-0">
               <div className="text-[13px] font-semibold text-slate-800 truncate">Super Admin</div>
-              <div className="text-[11.5px] text-slate-400 truncate">{user.email}</div>
+              <div className="text-[11.5px] text-slate-400 truncate">{user?.email}</div>
             </div>
             <button
               onClick={logout}

@@ -53,8 +53,8 @@ function RegDrawer({
 }) {
   const [confirmApprove, setConfirmApprove] = useState(false)
   const [confirmReject, setConfirmReject] = useState(false)
-  const { isPending: approvingId } = useApproveUser()
-  const { isPending: rejectingId } = useRejectUser()
+  const { isPending: isApproving } = useApproveUser()
+  const { isPending: isRejecting } = useRejectUser()
 
   useEffect(() => {
     if (!item) return
@@ -129,7 +129,7 @@ function RegDrawer({
         title={`Duyệt đăng ký?`}
         body={`Chủ sân "${item.fullName ?? item.email}" sẽ được kích hoạt và có thể đăng nhập vào hệ thống.`}
         confirmLabel="Duyệt"
-        loading={approvingId}
+        loading={isApproving}
         onConfirm={() => { onApprove(item); setConfirmApprove(false) }}
         onClose={() => setConfirmApprove(false)}
       />
@@ -139,7 +139,7 @@ function RegDrawer({
         body={`Đăng ký của "${item.fullName ?? item.email}" sẽ bị từ chối.`}
         confirmLabel="Từ chối"
         danger
-        loading={rejectingId}
+        loading={isRejecting}
         onConfirm={() => { onReject(item); setConfirmReject(false) }}
         onClose={() => setConfirmReject(false)}
       />
