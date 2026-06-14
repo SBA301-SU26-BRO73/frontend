@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/use-auth-context'
 import { login, registerCourtOwner, registerCustomer } from '@/services/auth/auth.service'
 import type { LoginRequest, RegisterCustomerRequest } from '@/types/auth'
+import { decodeJwt } from '@/utils/token'
 
 export function useLogin() {
   const navigate = useNavigate()
@@ -14,7 +15,8 @@ export function useLogin() {
     onSuccess: (res) => {
       if (res.data) {
         setAuth(res.data)
-        navigate('/')
+        const decoded = decodeJwt(res.data.accessToken)
+        navigate(decoded.role === 'SUPER_ADMIN' ? '/admin' : '/')
       }
     },
   })
