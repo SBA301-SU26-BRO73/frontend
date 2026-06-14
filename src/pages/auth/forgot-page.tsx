@@ -6,7 +6,7 @@ import { Button, Field, Logo, TextInput } from '@/components/auth/auth-ui'
 import { HeroPanel } from '@/components/auth/hero-panel'
 import { validators } from '@/utils/validators'
 
-export function ForgotScreen() {
+export function ForgotPage() {
   const [email, setEmail] = useState('')
   const [err, setErr] = useState('')
   const [loading, setLoading] = useState(false)

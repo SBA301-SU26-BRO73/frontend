@@ -7,7 +7,7 @@ import { HeroPanel } from '@/components/auth/hero-panel'
 import { useLogin } from '@/hooks/use-auth'
 import { validators } from '@/utils/validators'
 
-export function LoginScreen() {
+export function LoginPage() {
   const [params] = useSearchParams()
   const navigate = useNavigate()
   const isAdmin = params.get('role') === 'admin'

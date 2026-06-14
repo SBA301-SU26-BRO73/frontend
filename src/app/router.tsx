@@ -1,12 +1,11 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 
 import { MainLayout } from '@/layouts/main-layout'
-import { AuthPage } from '@/pages/auth/auth-page'
-import { ForgotScreen } from '@/pages/auth/screens/forgot-screen'
-import { LoginScreen } from '@/pages/auth/screens/login-screen'
-import { RegisterAdminScreen } from '@/pages/auth/screens/register-admin-screen'
-import { RegisterCustomerScreen } from '@/pages/auth/screens/register-customer-screen'
-import { RolePickScreen } from '@/pages/auth/screens/role-pick-screen'
+import { ForgotPage } from '@/pages/auth/forgot-page'
+import { LoginPage } from '@/pages/auth/login-page'
+import { RegisterAdminPage } from '@/pages/auth/register-admin-page'
+import { RegisterCustomerPage } from '@/pages/auth/register-customer-page'
+import { RolePickPage } from '@/pages/auth/role-pick-page'
 import { DocsPage } from '@/pages/docs/docs-page'
 import { HomePage } from '@/pages/home/home-page'
 import { NotFoundPage } from '@/pages/not-found/not-found-page'
@@ -29,7 +28,6 @@ export const router = createBrowserRouter([
   },
   {
     path: 'auth',
-    element: <AuthPage />,
     children: [
       {
         index: true,
@@ -37,23 +35,23 @@ export const router = createBrowserRouter([
       },
       {
         path: 'role-pick',
-        element: <RolePickScreen />,
+        element: <RolePickPage />,
       },
       {
         path: 'login',
-        element: <LoginScreen />,
+        element: <LoginPage />,
       },
       {
         path: 'register/customer',
-        element: <RegisterCustomerScreen />,
+        element: <RegisterCustomerPage />,
       },
       {
         path: 'register/court-owner',
-        element: <RegisterAdminScreen />,
+        element: <RegisterAdminPage />,
       },
       {
         path: 'forgot-password',
-        element: <ForgotScreen />,
+        element: <ForgotPage />,
       },
     ],
   },

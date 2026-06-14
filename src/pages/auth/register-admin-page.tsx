@@ -14,7 +14,7 @@ import { UploadZone } from '@/components/auth/upload-zone'
 import { useRegisterCourtOwner } from '@/hooks/use-auth'
 import { validators } from '@/utils/validators'
 
-export function RegisterAdminScreen() {
+export function RegisterAdminPage() {
   const [f, setF] = useState({ email: '', phone: '', password: '', confirm: '' })
   const [docs, setDocs] = useState<File[]>([])
   const [photos, setPhotos] = useState<File[]>([])

@@ -47,7 +47,7 @@ function RoleCard({ icon: Icon, title, desc, onClick }: RoleCardProps) {
   )
 }
 
-export function RolePickScreen() {
+export function RolePickPage() {
   const navigate = useNavigate()
   return (
     <div className="grid md:grid-cols-[46fr_54fr] h-screen overflow-hidden bg-white">

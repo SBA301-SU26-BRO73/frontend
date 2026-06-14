@@ -15,7 +15,7 @@ import { HeroPanel } from '@/components/auth/hero-panel'
 import { useRegisterCustomer } from '@/hooks/use-auth'
 import { validators } from '@/utils/validators'
 
-export function RegisterCustomerScreen() {
+export function RegisterCustomerPage() {
   const [f, setF] = useState({
     fullName: '',
     phone: '',
