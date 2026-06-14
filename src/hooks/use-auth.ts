@@ -1,13 +1,13 @@
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 
+import { useAuth } from '@/context/auth-context'
 import { login, registerCourtOwner, registerCustomer } from '@/services/auth/auth.service'
 import type { LoginRequest, RegisterCustomerRequest } from '@/types/auth'
-import { useAuthStore } from './use-auth-store'
 
 export function useLogin() {
   const navigate = useNavigate()
-  const { setAuth } = useAuthStore()
+  const { setAuth } = useAuth()
 
   return useMutation({
     mutationFn: (data: LoginRequest) => login(data),
@@ -22,15 +22,11 @@ export function useLogin() {
 
 export function useRegisterCustomer() {
   const navigate = useNavigate()
-  const { setAuth } = useAuthStore()
 
   return useMutation({
     mutationFn: (data: RegisterCustomerRequest) => registerCustomer(data),
-    onSuccess: (res) => {
-      if (res.data) {
-        setAuth(res.data)
-        navigate('/')
-      }
+    onSuccess: () => {
+      navigate('/auth/login?role=customer')
     },
   })
 }

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { Button, Field, Logo, PasswordInput, PwMeter, TextInput } from '@/components/auth/auth-ui'
-import { useAuthStore } from '@/hooks/use-auth-store'
+import { useAuth } from '@/context/auth-context'
 import type { UserRole } from '@/types/auth'
 
 const ROLE_LABEL: Record<UserRole, string> = {
@@ -28,7 +28,7 @@ function Toast({ msg }: { msg: string }) {
 
 export function ProfilePage() {
   const navigate = useNavigate()
-  const { user, isLoggedIn, clearAuth } = useAuthStore()
+  const { user, isLoggedIn, clearAuth } = useAuth()
 
   useEffect(() => {
     if (!isLoggedIn) navigate('/auth/role-pick', { replace: true })
