@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import type { DailySlotResponse } from '@/services/branch/branch.api';
 import type { SelectedSlot } from './booking-panel';
 
@@ -26,9 +27,39 @@ export default function CourtAvailabilityGrid({
   courts,
   timeSlots,
 }: CourtAvailabilityGridProps) {
+  const dateInputRef = useRef<HTMLInputElement>(null);
+
+  const handleCustomDateClick = () => {
+    if (dateInputRef.current) {
+      try {
+        dateInputRef.current.showPicker();
+      } catch (err) {
+        dateInputRef.current.click();
+      }
+    }
+  };
 
   // Generate 8 days starting from today
   const dates = getNext8Days();
+
+  const isSelectedDateInList = dates.some(d => d.dateStr === selectedDate);
+  const getCustomButtonDisplay = () => {
+    if (!isSelectedDateInList && selectedDate) {
+      const d = new Date(selectedDate);
+      const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+      return {
+        dayName: daysOfWeek[d.getDay()],
+        dayNum: d.getDate(),
+        active: true
+      };
+    }
+    return {
+      dayName: 'Custom',
+      dayNum: null,
+      active: false
+    };
+  };
+  const customDisplay = getCustomButtonDisplay();
 
   // Peak times helper
   const isPeakHour = (time: string) => {
@@ -65,6 +96,40 @@ export default function CourtAvailabilityGrid({
             </button>
           );
         })}
+
+        {/* Custom Date Picker Card */}
+        <div 
+          onClick={handleCustomDateClick}
+          className={`relative flex flex-col items-center justify-center min-w-[76px] h-[76px] rounded-2xl border transition-all duration-200 cursor-pointer ${
+            customDisplay.active
+              ? 'bg-primary text-white border-primary shadow-lg scale-105'
+              : 'bg-white text-on-surface border-outline-variant/40 hover:border-primary/50'
+          }`}
+        >
+          <span className={`text-[11px] font-bold tracking-wider uppercase pointer-events-none select-none ${customDisplay.active ? 'text-white/80' : 'text-on-surface-variant'}`}>
+            {customDisplay.dayName}
+          </span>
+          {customDisplay.dayNum !== null ? (
+            <span className="text-xl font-bold mt-0.5 pointer-events-none select-none">{customDisplay.dayNum}</span>
+          ) : (
+            <span className="material-symbols-outlined text-[20px] mt-0.5 text-primary pointer-events-none select-none">
+              calendar_month
+            </span>
+          )}
+          <input
+            ref={dateInputRef}
+            type="date"
+            min={dates[0]?.dateStr}
+            value={selectedDate}
+            onChange={(e) => {
+              if (e.target.value) {
+                onDateChange(e.target.value);
+              }
+            }}
+            className="absolute opacity-0 pointer-events-none"
+            style={{ width: '1px', height: '1px', pointerEvents: 'none' }}
+          />
+        </div>
       </div>
 
       {/* Grid Container */}
@@ -84,7 +149,7 @@ export default function CourtAvailabilityGrid({
                 return (
                   <div
                     key={time}
-                    className="w-[96px] h-16 flex flex-col items-center justify-center shrink-0 border-r border-outline-variant/10 select-none"
+                    className="w-[80px] h-16 flex flex-col items-center justify-center shrink-0 border-r border-outline-variant/10 select-none"
                   >
                     <span className="font-bold text-on-surface text-body-sm">{time}</span>
                     {peak && (
@@ -103,7 +168,7 @@ export default function CourtAvailabilityGrid({
                 const schedule = courtSchedules[court.id] || [];
 
                 return (
-                  <div key={court.id} className="flex">
+                  <div key={court.id} id={`court-row-${court.id}`} className="flex">
                     {/* Sticky Court Info Column */}
                     <div className="sticky left-0 z-20 bg-white border-r border-outline-variant/30 w-[180px] h-20 flex flex-col justify-center px-4 shrink-0">
                       <span className="font-bold text-on-surface text-body-md">{court.name}</span>
@@ -127,12 +192,17 @@ export default function CourtAvailabilityGrid({
                       let content = null;
                       let disabled = false;
 
-                      if (status === 'EXPIRED') {
-                        cellStyle = 'bg-surface-container/20 border-outline-variant/5 text-on-surface-variant/20 cursor-not-allowed';
+                      if (status === 'EXPIRED' || status === 'BOOKED') {
+                        cellStyle = 'bg-gray-300 border-gray-300/50 text-on-surface-variant/30 cursor-not-allowed';
                         disabled = true;
-                      } else if (status === 'BOOKED') {
-                        cellStyle = 'bg-surface-container-high/40 border-outline-variant/10 text-on-surface-variant/30 cursor-not-allowed';
+                      } else if (status === 'HOLDING') {
+                        cellStyle = 'bg-[#FFF7ED] border-[#FED7AA] text-[#C2410C]/40 cursor-not-allowed';
                         disabled = true;
+                        content = (
+                          <span className="text-[10px] font-bold text-[#C2410C]/70 tracking-wider">
+                            HOLD
+                          </span>
+                        );
                       } else {
                         // AVAILABLE
                         if (selected) {
@@ -150,7 +220,7 @@ export default function CourtAvailabilityGrid({
                       return (
                         <div
                           key={time}
-                          className="w-[96px] h-20 p-1.5 shrink-0 border-r border-outline-variant/10 flex items-center justify-center"
+                          className="w-[80px] h-20 p-1.5 shrink-0 border-r border-outline-variant/10 flex items-center justify-center"
                         >
                           <button
                             disabled={disabled}
@@ -180,8 +250,14 @@ export default function CourtAvailabilityGrid({
             <span>Selected</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-surface-container-high border border-outline-variant/20"></div>
-            <span>Booked</span>
+            <div className="w-4 h-4 rounded bg-gray-300 border border-gray-300/50"></div>
+            <span>Not Available</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded bg-[#FFF7ED] border border-[#FED7AA] flex items-center justify-center">
+              <span className="text-[8px] font-bold text-[#C2410C]">HOLD</span>
+            </div>
+            <span>Holding</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 rounded border border-[#008096]/30 bg-[#008096]/10 flex items-center justify-center">

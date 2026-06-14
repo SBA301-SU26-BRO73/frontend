@@ -46,7 +46,7 @@ export default function BookingPanel({ selectedSlots, venueName, onBook }: Booki
   }
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-32px)] max-w-[1200px] z-50">
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-32px)] max-w-[1520px] z-50">
       <div className="bg-white border border-outline-variant/30 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-4 md:px-6 md:py-4 flex flex-col md:flex-row justify-between items-center gap-4">
         <div className="flex items-center gap-4 w-full md:w-auto">
           <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">

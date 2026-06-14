@@ -68,6 +68,11 @@ export const branchApi = {
     return response.data.data;
   },
 
+  getCourtsByBranch: async (branchId: string | number): Promise<CourtResponse[]> => {
+    const response = await axiosClient.get<ApiResponse<CourtResponse[]>>(`/branches/${branchId}/courts`);
+    return response.data.data;
+  },
+
   getDailyCourtSchedule: async (courtId: number, date: string): Promise<DailySlotResponse[]> => {
     const response = await axiosClient.get<ApiResponse<DailySlotResponse[]>>(`/courts/${courtId}/daily-schedule`, {
       params: { date }
@@ -76,9 +81,23 @@ export const branchApi = {
   },
 };
 
+export interface CourtResponse {
+  id: number;
+  branchId: number;
+  branchName: string;
+  name: string;
+  courtTypeId: number;
+  courtTypeName: string;
+  description: string;
+  imageUrl: string;
+  status: 'ACTIVE' | 'INACTIVE';
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface DailySlotResponse {
   startTime: string;
   endTime: string;
   price: number;
-  status: 'EXPIRED' | 'AVAILABLE' | 'BOOKED';
+  status: 'EXPIRED' | 'AVAILABLE' | 'BOOKED' | 'HOLDING';
 }

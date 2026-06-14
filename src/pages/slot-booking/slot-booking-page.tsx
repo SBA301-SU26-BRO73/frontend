@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import CourtAvailabilityGrid from './components/court-availability-grid';
 import type { Court } from './components/court-availability-grid';
 import BookingPanel from './components/booking-panel';
@@ -6,53 +7,95 @@ import type { SelectedSlot } from './components/booking-panel';
 import { branchApi } from '@/services/branch/branch.api';
 import type { DailySlotResponse } from '@/services/branch/branch.api';
 
-const COURTS: Court[] = [
-  { id: 1, name: 'Court 01', type: 'INDOOR • HARD' },
-  { id: 2, name: 'Court 02', type: 'INDOOR • HARD' },
-  { id: 3, name: 'Court 03', type: 'OUTDOOR • GRASS' },
-];
-
 const EXTENDED_TIMESLOTS = [
   '07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30',
   '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30',
-  '15:00', '15:30', '16:00', '16:30', '17:00'
+  '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30',
+  '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00'
 ];
 
 export default function SlotBookingPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const branchIdParam = searchParams.get('branchId');
+  const courtIdParam = searchParams.get('courtId');
+  const dateParam = searchParams.get('date');
+
   const todayStr = new Date().toISOString().split('T')[0];
-  const [selectedDate, setSelectedDate] = useState<string>(todayStr);
+  const [selectedDate, setSelectedDate] = useState<string>(dateParam || todayStr);
   const [courtSchedules, setCourtSchedules] = useState<Record<number, DailySlotResponse[]>>({});
-  const [selectedSlots, setSelectedSlots] = useState<SelectedSlot[]>([
-    // Pre-populate to match the screenshot
-    {
-      courtId: 1,
-      courtName: 'Court 01',
-      startTime: '09:00',
-      endTime: '09:30',
-      price: 22.50,
-      date: todayStr,
-    },
-    {
-      courtId: 1,
-      courtName: 'Court 01',
-      startTime: '09:30',
-      endTime: '10:00',
-      price: 22.50,
-      date: todayStr,
-    }
-  ]);
+  const [selectedSlots, setSelectedSlots] = useState<SelectedSlot[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
-  const [venueName] = useState<string>('Downtown Sports Hub');
+  
+  const [selectedBranchId, setSelectedBranchId] = useState<number | null>(null);
+  const [courts, setCourts] = useState<Court[]>([]);
+  const [venueName, setVenueName] = useState<string>('Loading Branch...');
 
+  // Sync date selection with URL dateParam if it changes
   useEffect(() => {
+    if (dateParam) {
+      setSelectedDate(dateParam);
+    }
+  }, [dateParam]);
+
+  // Load current branch details and its courts list
+  useEffect(() => {
+    const fetchBranchAndCourts = async () => {
+      try {
+        let activeBranchId = branchIdParam ? Number(branchIdParam) : null;
+        
+        if (!activeBranchId) {
+          // If no branchId in URL, fetch first branch as default
+          const data = await branchApi.getAll(0, 1);
+          if (data && data.content && data.content.length > 0) {
+            activeBranchId = data.content[0].id;
+            setSearchParams({ branchId: activeBranchId.toString() });
+          }
+        }
+        
+        if (activeBranchId) {
+          setSelectedBranchId(activeBranchId);
+          
+          // Fetch branch name
+          const branchDetail = await branchApi.getById(activeBranchId);
+          if (branchDetail) {
+            setVenueName(branchDetail.name);
+          }
+
+          // Fetch courts list
+          const apiCourts = await branchApi.getCourtsByBranch(activeBranchId);
+          if (apiCourts) {
+            const mappedCourts = apiCourts.map(c => ({
+              id: c.id,
+              name: c.name,
+              type: c.courtTypeName || 'Indoor • Hard'
+            }));
+            setCourts(mappedCourts);
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching branch details and courts:', err);
+      }
+    };
+    
+    fetchBranchAndCourts();
+  }, [branchIdParam, setSearchParams]);
+
+  // Fetch schedules for each court of the selected branch
+  useEffect(() => {
+    if (courts.length === 0) {
+      setCourtSchedules({});
+      setIsLoading(false);
+      return;
+    }
+
     const fetchSchedules = async () => {
       setIsLoading(true);
       const newSchedules: Record<number, DailySlotResponse[]> = {};
 
       try {
         await Promise.all(
-          COURTS.map(async (court) => {
+          courts.map(async (court) => {
             try {
               // Try fetching from actual backend endpoint
               const data = await branchApi.getDailyCourtSchedule(court.id, selectedDate);
@@ -76,7 +119,37 @@ export default function SlotBookingPage() {
     };
 
     fetchSchedules();
-  }, [selectedDate]);
+  }, [courts, selectedDate]);
+
+  // Scroll to specific court row if courtId is in query params
+  useEffect(() => {
+    if (courtIdParam && courts.length > 0 && !isLoading) {
+      const timer = setTimeout(() => {
+        const rowElement = document.getElementById(`court-row-${courtIdParam}`);
+        if (rowElement) {
+          rowElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Highlight row temporarily
+          rowElement.classList.add('bg-primary/5');
+          setTimeout(() => {
+            rowElement.classList.remove('bg-primary/5');
+          }, 2000);
+        }
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [courtIdParam, courts, isLoading]);
+
+  const handleDateChange = (newDate: string) => {
+    setSelectedDate(newDate);
+    
+    const updatedParams: Record<string, string> = { 
+      branchId: selectedBranchId?.toString() || '' 
+    };
+    if (newDate !== todayStr) {
+      updatedParams.date = newDate;
+    }
+    setSearchParams(updatedParams);
+  };
 
   const handleSlotClick = (court: Court, timeStr: string, price: number) => {
     const [hh, mm] = timeStr.split(':').map(Number);
@@ -123,16 +196,18 @@ export default function SlotBookingPage() {
   };
 
   return (
-    <div className="w-full max-w-[1280px] mx-auto px-4 py-8 md:px-8 pb-32">
+    <div className="w-full max-w-[1600px] mx-auto px-4 py-8 md:px-8 pb-32">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-headline-lg font-bold text-on-surface">Court Availability</h1>
           <p className="text-on-surface-variant mt-1 text-body-md">Find and book your perfect match time.</p>
         </div>
+        
+        {/* Branch Name Static Label */}
         <div className="relative shrink-0">
-          <div className="flex items-center gap-2 px-4 py-2 border border-outline-variant/60 rounded-xl bg-white text-on-surface text-label-md font-bold shadow-sm select-none cursor-pointer">
+          <div className="flex items-center gap-2 px-4 py-2.5 border border-outline-variant/60 rounded-xl bg-white text-on-surface text-label-md font-bold shadow-sm select-none">
+            <span className="material-symbols-outlined text-primary text-[20px]">location_on</span>
             <span>{venueName}</span>
-            <span className="material-symbols-outlined text-[20px]">keyboard_arrow_down</span>
           </div>
         </div>
       </div>
@@ -142,14 +217,20 @@ export default function SlotBookingPage() {
           <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
           <span className="text-on-surface-variant font-medium text-body-md">Loading schedules...</span>
         </div>
+      ) : courts.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-24 border border-outline-variant/30 rounded-2xl bg-white shadow-sm">
+          <span className="material-symbols-outlined text-on-surface-variant/40 text-5xl mb-4">sports_tennis</span>
+          <h3 className="text-xl font-bold text-on-surface">No Courts Available</h3>
+          <p className="text-on-surface-variant text-sm mt-1">There are no courts registered at this branch location.</p>
+        </div>
       ) : (
         <CourtAvailabilityGrid
           selectedDate={selectedDate}
-          onDateChange={setSelectedDate}
+          onDateChange={handleDateChange}
           selectedSlots={selectedSlots}
           onSlotClick={handleSlotClick}
           courtSchedules={courtSchedules}
-          courts={COURTS}
+          courts={courts}
           timeSlots={EXTENDED_TIMESLOTS}
         />
       )}
@@ -215,7 +296,7 @@ const generateMockSchedule = (courtId: number, dateStr: string): DailySlotRespon
   const currentHH = now.getHours();
   const currentMM = now.getMinutes();
 
-  while (currentHour < 17 || (currentHour === 17 && currentMinute === 0)) {
+  while (currentHour < 22 || (currentHour === 22 && currentMinute === 0)) {
     const hh = currentHour.toString().padStart(2, '0');
     const mm = currentMinute.toString().padStart(2, '0');
     const startTimeStr = `${hh}:${mm}:00`;
@@ -233,7 +314,7 @@ const generateMockSchedule = (courtId: number, dateStr: string): DailySlotRespon
     const isPeak = ['09:00', '09:30', '10:00', '10:30'].includes(`${hh}:${mm}`);
     const price = isPeak ? 22.50 : 18.75;
 
-    let status: 'AVAILABLE' | 'BOOKED' | 'EXPIRED' = 'AVAILABLE';
+    let status: 'AVAILABLE' | 'BOOKED' | 'HOLDING' | 'EXPIRED' = 'AVAILABLE';
     
     if (dateStr === todayStr) {
       if (currentHour < currentHH || (currentHour === currentHH && currentMinute < currentMM)) {
@@ -241,18 +322,18 @@ const generateMockSchedule = (courtId: number, dateStr: string): DailySlotRespon
       }
     }
 
-    if (courtId === 1) {
-      if (startTimeStr === '11:30:00' || startTimeStr === '12:00:00' || startTimeStr === '15:00:00') {
-        status = 'BOOKED';
-      }
-    } else if (courtId === 2) {
-      if (startTimeStr === '08:00:00' || startTimeStr === '10:30:00' || startTimeStr === '14:00:00') {
-        status = 'BOOKED';
-      }
-    } else if (courtId === 3) {
-      if (startTimeStr === '09:30:00' || startTimeStr === '13:00:00' || startTimeStr === '16:30:00') {
-        status = 'BOOKED';
-      }
+    const isMockBooked = (courtId % 3 === 0 && (startTimeStr === '11:30:00' || startTimeStr === '12:00:00' || startTimeStr === '15:00:00')) ||
+                         (courtId % 3 === 1 && (startTimeStr === '08:00:00' || startTimeStr === '10:30:00' || startTimeStr === '14:00:00')) ||
+                         (courtId % 3 === 2 && (startTimeStr === '09:30:00' || startTimeStr === '13:00:00' || startTimeStr === '16:30:00'));
+
+    const isMockHolding = (courtId % 3 === 0 && startTimeStr === '10:00:00') ||
+                          (courtId % 3 === 1 && startTimeStr === '16:00:00') ||
+                          (courtId % 3 === 2 && startTimeStr === '14:30:00');
+
+    if (isMockBooked) {
+      status = 'BOOKED';
+    } else if (isMockHolding) {
+      status = 'HOLDING';
     }
 
     slots.push({

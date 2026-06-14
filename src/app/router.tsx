@@ -8,6 +8,7 @@ import BranchListPage from '@/pages/branch/branch-list-page'
 import BranchDetailPage from '@/pages/branch/branch-detail-page'
 import SlotBookingPage from '@/pages/slot-booking/slot-booking-page'
 
+
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -29,7 +30,7 @@ export const router = createBrowserRouter([
         path: 'branches',
         children: [
           {
-            index: true, 
+            index: true,
             element: <BranchListPage />,
           },
           {

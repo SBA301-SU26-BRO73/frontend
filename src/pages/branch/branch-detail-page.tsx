@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { branchApi, type Branch } from "../../services/branch/branch.api";
+import { branchApi, type Branch, type CourtResponse } from "../../services/branch/branch.api";
 
 import BranchGallery from "./components/branch-gallery";
 import BranchInfo from "./components/branch-info";
@@ -11,19 +11,26 @@ import BookingPanel from "./components/booking-panel";
 export default function BranchDetailPage() {
   const { id } = useParams<{ id: string }>(); 
   const [branch, setBranch] = useState<Branch | null>(null);
+  const [courts, setCourts] = useState<CourtResponse[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoadingCourts, setIsLoadingCourts] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchBranchDetail = async () => {
       if (!id) return;
       try {
         setIsLoading(true);
+        setIsLoadingCourts(true);
         const data = await branchApi.getById(id);
         setBranch(data);
+        
+        const courtsData = await branchApi.getCourtsByBranch(id);
+        setCourts(courtsData);
       } catch (error) {
         console.error("Lỗi khi tải chi tiết Branch:", error);
       } finally {
         setIsLoading(false);
+        setIsLoadingCourts(false);
       }
     };
 
@@ -81,13 +88,13 @@ export default function BranchDetailPage() {
         {/* Các component con có thể được pass prop branch vào sau này nếu cần */}
         <BranchGallery />
         <BranchInfo />
-        <BranchCourts />
+        <BranchCourts courts={courts} isLoading={isLoadingCourts} branchId={branch.id} />
         <BranchReviews />
         
       </div>
 
       {/* Cột phải (4) */}
-      <BookingPanel />
+      <BookingPanel branch={branch} courts={courts} />
 
     </div>
   );
