@@ -34,10 +34,6 @@ export function getBranchFieldErrors(error: unknown): BranchFormErrors {
     return { name: 'Branch name already exists.' }
   }
 
-  if (response.errorCode === 'admin_not_found') {
-    return { adminId: 'Admin not found.' }
-  }
-
   if (response.errorCode === 'invalid_input' && response.data) {
     return response.data as BranchFormErrors
   }

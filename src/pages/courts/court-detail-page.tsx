@@ -20,12 +20,12 @@ export function CourtDetailPage() {
     selectedBranchId?: number
     focusCourtId?: number
   } | null
-  const returnTo = navigationState?.returnTo ?? '/courts'
+  const returnTo = navigationState?.returnTo ?? '/auth/courts'
   const courtId = Number(useParams().courtId)
   const hasValidId = Number.isInteger(courtId) && courtId > 0
   const courtQuery = useQuery({ queryKey: ['courts', 'detail', courtId], queryFn: () => getCourtDetail(courtId), enabled: hasValidId, retry: false })
 
-  if (!hasValidId) return <Navigate to="/courts" replace />
+  if (!hasValidId) return <Navigate to="/auth/courts" replace />
   if (courtQuery.isPending) return <PageState title="Đang tải thông tin sân..." />
   if (courtQuery.isError) return <PageState title={getCourtErrorCode(courtQuery.error) === 'RESOURCE_NOT_FOUND' ? 'Không tìm thấy sân' : 'Không thể tải thông tin sân'} description={getCourtErrorMessage(courtQuery.error)} />
 
@@ -45,7 +45,7 @@ export function CourtDetailPage() {
             Quay lại
           </Link>
           <Link
-            to={`/courts/${court.id}/edit`}
+            to={`/auth/courts/${court.id}/edit`}
             state={{
               ...navigationState,
               focusCourtId: navigationState?.focusCourtId ?? court.id,
@@ -58,7 +58,7 @@ export function CourtDetailPage() {
 
         <div className="mt-4 flex justify-end">
           <Link
-            to="/time-slots"
+            to="/auth/time-slots"
             state={{ courtId: court.id }}
             className="rounded-xl border border-emerald-200 bg-white px-4 py-2.5 text-sm font-bold text-[#059669] hover:bg-emerald-50"
           >
@@ -92,5 +92,5 @@ function Info({ icon: Icon, label, value }: { icon: typeof MapPin; label: string
 }
 
 function PageState({ title, description }: { title: string; description?: string }) {
-  return <div className="mx-auto max-w-3xl px-4 py-20 text-center"><h1 className="text-2xl font-bold">{title}</h1>{description && <p className="mt-3 text-slate-600">{description}</p>}<Link to="/courts" className="mt-6 inline-block rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700">Về danh sách</Link></div>
+  return <div className="mx-auto max-w-3xl px-4 py-20 text-center"><h1 className="text-2xl font-bold">{title}</h1>{description && <p className="mt-3 text-slate-600">{description}</p>}<Link to="/auth/courts" className="mt-6 inline-block rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700">Về danh sách</Link></div>
 }

@@ -5,7 +5,6 @@ import type {
 } from '@/types/branch'
 
 export interface BranchFormValues {
-  adminId: string
   name: string
   address: string
   ward: string
@@ -22,7 +21,6 @@ export interface BranchFormValues {
 export type BranchFormErrors = Partial<Record<keyof BranchFormValues, string>>
 
 export const emptyBranchFormValues: BranchFormValues = {
-  adminId: '',
   name: '',
   address: '',
   ward: '',
@@ -49,7 +47,6 @@ const maxLengths: Partial<Record<keyof BranchFormValues, number>> = {
 
 export function branchToFormValues(branch: Branch): BranchFormValues {
   return {
-    adminId: String(branch.adminId),
     name: branch.name,
     address: branch.address,
     ward: branch.ward ?? '',
@@ -66,13 +63,6 @@ export function branchToFormValues(branch: Branch): BranchFormValues {
 
 export function validateBranchForm(values: BranchFormValues): BranchFormErrors {
   const errors: BranchFormErrors = {}
-  const adminId = Number(values.adminId)
-
-  if (!values.adminId.trim()) {
-    errors.adminId = 'Admin ID is required.'
-  } else if (!Number.isInteger(adminId) || adminId <= 0) {
-    errors.adminId = 'Admin ID must be a positive integer.'
-  }
 
   for (const field of ['name', 'address', 'city'] as const) {
     if (!values[field].trim()) {
@@ -116,9 +106,10 @@ function toApiTime(value: string) {
 
 export function toCreateBranchPayload(
   values: BranchFormValues,
+  adminId: number,
 ): CreateBranchRequest {
   return {
-    adminId: Number(values.adminId),
+    adminId,
     name: values.name.trim(),
     address: values.address.trim(),
     ward: nullable(values.ward),
@@ -135,6 +126,7 @@ export function toCreateBranchPayload(
 
 export function toUpdateBranchPayload(
   values: BranchFormValues,
+  adminId: number,
 ): UpdateBranchRequest {
-  return { ...toCreateBranchPayload(values), status: 'ACTIVE' }
+  return { ...toCreateBranchPayload(values, adminId), status: 'ACTIVE' }
 }

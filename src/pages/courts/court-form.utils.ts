@@ -50,7 +50,7 @@ export function validateCourtForm(values: CourtFormValues): CourtFormErrors {
     errors.name = 'Maximum 150 characters.'
   }
   if (!values.courtTypeId || !Number.isInteger(courtTypeId) || courtTypeId <= 0) {
-    errors.courtTypeId = 'Court type ID must be a positive integer.'
+    errors.courtTypeId = 'Court type is required.'
   }
   if (values.imageUrl.trim()) {
     try {

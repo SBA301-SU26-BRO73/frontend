@@ -3,17 +3,17 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom'
 const navItems = [
   { to: '/', label: 'Home' },
   { to: '/docs', label: 'Docs' },
-  { to: '/branches', label: 'Branches' },
-  { to: '/courts', label: 'Courts' },
-  { to: '/time-slots', label: 'Time Slots' },
+  { to: '/auth/branches', label: 'Branches' },
+  { to: '/auth/courts', label: 'Courts' },
+  { to: '/auth/time-slots', label: 'Time Slots' },
 ]
 
 export function MainLayout() {
   const location = useLocation()
   const isManagementPage =
-    location.pathname.startsWith('/branches') ||
-    location.pathname.startsWith('/courts') ||
-    location.pathname.startsWith('/time-slots')
+    location.pathname.startsWith('/auth/branches') ||
+    location.pathname.startsWith('/auth/courts') ||
+    location.pathname.startsWith('/auth/time-slots')
 
   return (
     <div className="min-h-screen text-slate-900">

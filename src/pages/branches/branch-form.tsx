@@ -86,16 +86,6 @@ export function BranchForm({
 
         <div className="grid gap-5 md:grid-cols-2">
           <Field
-            label="Admin ID"
-            name="adminId"
-            value={values.adminId}
-            error={errors.adminId}
-            type="number"
-            placeholder="Enter the managing user's ID"
-            required
-            onChange={onChange}
-          />
-          <Field
             label="Branch name"
             name="name"
             value={values.name}
@@ -162,11 +152,6 @@ export function BranchForm({
           </div>
         </div>
 
-        <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm leading-6 text-emerald-900">
-          Admin authentication and the admin directory are not available yet.
-          Enter a valid existing user ID for now; this field can later be replaced
-          by the signed-in admin or an admin selector without changing the API layer.
-        </div>
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">

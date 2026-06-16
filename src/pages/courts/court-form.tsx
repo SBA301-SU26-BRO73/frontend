@@ -1,13 +1,16 @@
 import { useState, type FormEvent } from 'react'
 
-import type { Branch } from '@/types/branch'
+import type { CourtTypeData } from '@/types/admin'
+import type { BranchStatus } from '@/types/branch'
 import type { CourtStatus } from '@/types/court'
 import type { CourtFormErrors, CourtFormValues } from './court-form.utils'
 
 type CourtFormProps = {
   values: CourtFormValues
   errors: CourtFormErrors
-  branches: Branch[]
+  branches: Array<{ id: number; name: string; status: BranchStatus }>
+  courtTypes: CourtTypeData[]
+  isCourtTypesLoading: boolean
   isEdit: boolean
   isSubmitting: boolean
   submitLabel: string
@@ -30,6 +33,8 @@ export function CourtForm({
   values,
   errors,
   branches,
+  courtTypes,
+  isCourtTypesLoading,
   isEdit,
   isSubmitting,
   submitLabel,
@@ -91,18 +96,23 @@ export function CourtForm({
           </label>
 
           <label className="block space-y-2">
-            <span className="text-sm font-semibold text-slate-700">Court type ID *</span>
-            <input
+            <span className="text-sm font-semibold text-slate-700">Loại sân *</span>
+            <select
               name="courtTypeId"
-              type="number"
-              min="1"
-              step="1"
               value={values.courtTypeId}
+              disabled={isCourtTypesLoading}
               aria-invalid={Boolean(errors.courtTypeId)}
               aria-describedby={errors.courtTypeId ? 'courtTypeId-error' : undefined}
               onChange={(event) => onChange('courtTypeId', event.target.value)}
-              className={inputClass(Boolean(errors.courtTypeId))}
-            />
+              className={`${inputClass(Boolean(errors.courtTypeId))} disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500`}
+            >
+              <option value="">{isCourtTypesLoading ? 'Đang tải loại sân...' : 'Chọn loại sân'}</option>
+              {courtTypes.map((courtType) => (
+                <option key={courtType.id} value={courtType.id}>
+                  {courtType.name}{courtType.nameEn ? ` (${courtType.nameEn})` : ''}{courtType.active ? '' : ' - đang ẩn'}
+                </option>
+              ))}
+            </select>
             <ErrorText id="courtTypeId-error" message={errors.courtTypeId} />
           </label>
 
@@ -145,10 +155,6 @@ export function CourtForm({
             />
             <ErrorText id="imageUrl-error" message={errors.imageUrl} />
           </label>
-        </div>
-
-        <div className="mt-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900">
-          Backend chưa có API danh sách court type. Hãy nhập ID court type đã tồn tại; trường này sẽ được thay bằng selector khi backend bổ sung catalog API.
         </div>
 
         {values.imageUrl && !errors.imageUrl && (

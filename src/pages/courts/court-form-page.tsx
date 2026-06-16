@@ -2,8 +2,10 @@ import { useState, type FormEvent } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 
+import { useCourtTypes } from '@/hooks/use-court-types'
 import { getBranches } from '@/services/branch/branch.api'
 import { createCourt, getCourtDetail, updateCourt } from '@/services/court/court.api'
+import type { CourtTypeData } from '@/types/admin'
 import type { Court } from '@/types/court'
 import { CourtForm } from './court-form'
 import { getCourtErrorCode, getCourtErrorMessage, getCourtFieldErrors } from './court-error.utils'
@@ -49,7 +51,7 @@ export function CourtFormPage({ mode }: CourtFormPageProps) {
       />
     )
   }
-  if (!hasValidId) return <Navigate to="/courts" replace />
+  if (!hasValidId) return <Navigate to="/auth/courts" replace />
   if (detailQuery.isPending) return <PageMessage title="Đang tải thông tin sân..." />
   if (detailQuery.isError) {
     const notFound = getCourtErrorCode(detailQuery.error) === 'RESOURCE_NOT_FOUND'
@@ -105,6 +107,7 @@ function CourtEditor({
     queryKey: ['branches', 'court-form-options'],
     queryFn: () => getBranches({ page: 0, size: 100, sortField: 'name', sortDirection: 'asc' }),
   })
+  const courtTypesQuery = useCourtTypes()
 
   const mutation = useMutation({
     mutationFn: () => isEdit && court
@@ -112,7 +115,7 @@ function CourtEditor({
       : createCourt(toCreateCourtPayload(values)),
     onSuccess: async (savedCourt) => {
       await queryClient.invalidateQueries({ queryKey: ['courts'] })
-      navigate(returnTo ?? '/courts', {
+      navigate(returnTo ?? '/auth/courts', {
         replace: true,
         state: {
           successMessage: isEdit ? 'Cập nhật sân thành công.' : 'Tạo sân thành công.',
@@ -141,34 +144,39 @@ function CourtEditor({
     if (Object.keys(nextErrors).length === 0) mutation.mutate()
   }
 
-  const activeBranches = (branchesQuery.data?.content ?? []).filter((branch) => branch.status === 'ACTIVE')
+  const activeBranches = (branchesQuery.data?.content ?? [])
+    .filter((branch) => branch.status === 'ACTIVE')
+    .map(({ id, name, status }) => ({ id, name, status }))
   if (court && !activeBranches.some((branch) => branch.id === court.branchId)) {
     activeBranches.push({
       id: court.branchId,
       name: court.branchName,
       status: 'ACTIVE',
-      adminId: 0,
-      adminName: '',
-      address: '',
-      ward: null,
-      city: '',
-      phone: null,
-      openTime: '',
-      closeTime: '',
-      bankAccountNumber: null,
-      bankAccountName: null,
-      bankName: null,
-      bankQrImageUrl: null,
-      createdAt: '',
-      updatedAt: '',
     })
+  }
+  const courtTypes = courtTypesQuery.data?.data?.content ?? []
+  const selectableCourtTypes = courtTypes.filter((courtType) => (
+    courtType.active || String(courtType.id) === values.courtTypeId
+  ))
+  if (court && !selectableCourtTypes.some((courtType) => courtType.id === court.courtTypeId)) {
+    const currentCourtType: CourtTypeData = {
+      id: court.courtTypeId,
+      name: court.courtTypeName,
+      nameEn: null,
+      description: null,
+      icon: null,
+      color: null,
+      active: false,
+      createdAt: court.createdAt,
+    }
+    selectableCourtTypes.push(currentCourtType)
   }
 
   return (
     <div className="min-h-screen bg-[#F5F6F8]">
       <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
         <Link
-          to={returnTo ?? '/courts'}
+          to={returnTo ?? '/auth/courts'}
           state={{ selectedBranchId, focusCourtId: focusCourtId ?? court?.id }}
           className="text-sm font-semibold text-[#059669] hover:text-[#047857]"
         >
@@ -183,12 +191,16 @@ function CourtEditor({
         {branchesQuery.isError && <div role="alert" className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">Không thể tải danh sách branch. {getCourtErrorMessage(branchesQuery.error)}</div>}
         {submitError && <div role="alert" className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{submitError}</div>}
 
+        {courtTypesQuery.isError && <div role="alert" className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">Khong the tai danh sach loai san. {getCourtErrorMessage(courtTypesQuery.error)}</div>}
+
         <CourtForm
           values={values}
           errors={errors}
           branches={activeBranches}
+          courtTypes={selectableCourtTypes}
+          isCourtTypesLoading={courtTypesQuery.isPending}
           isEdit={isEdit}
-          isSubmitting={mutation.isPending || branchesQuery.isPending}
+          isSubmitting={mutation.isPending || branchesQuery.isPending || courtTypesQuery.isPending}
           submitLabel={isEdit ? 'Cập nhật sân' : 'Tạo sân'}
           onChange={handleChange}
           onSubmit={handleSubmit}
@@ -205,7 +217,7 @@ function PageMessage({ title, description, actionLabel, onAction }: { title: str
       {description && <p className="mt-3 text-slate-600">{description}</p>}
       <div className="mt-6 flex justify-center gap-3">
         {onAction && actionLabel && <button onClick={onAction} className="rounded-xl bg-[#10B981] px-4 py-2 text-sm font-bold text-white">{actionLabel}</button>}
-        <Link to="/courts" className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700">Về danh sách</Link>
+        <Link to="/auth/courts" className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700">Về danh sách</Link>
       </div>
     </div>
   )

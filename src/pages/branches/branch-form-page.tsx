@@ -7,6 +7,7 @@ import {
   getBranchDetail,
   updateBranch,
 } from '@/services/branch/branch.api'
+import { useAuth } from '@/hooks/use-auth-context'
 import type { Branch } from '@/types/branch'
 import { BranchForm } from './branch-form'
 import {
@@ -45,7 +46,7 @@ export function BranchFormPage({ mode }: BranchFormPageProps) {
     return <BranchEditor mode="create" />
   }
 
-  if (!hasValidId) return <Navigate to="/branches" replace />
+  if (!hasValidId) return <Navigate to="/auth/branches" replace />
 
   if (detailQuery.isPending) {
     return <PageMessage title="Loading branch..." />
@@ -84,6 +85,7 @@ type BranchEditorProps = {
 function BranchEditor({ mode, branch }: BranchEditorProps) {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+  const { user } = useAuth()
   const isEdit = mode === 'edit'
   const [values, setValues] = useState<BranchFormValues>(() =>
     branch ? branchToFormValues(branch) : emptyBranchFormValues,
@@ -93,14 +95,17 @@ function BranchEditor({ mode, branch }: BranchEditorProps) {
 
   const mutation = useMutation({
     mutationFn: () => {
-      if (isEdit && branch) {
-        return updateBranch(branch.id, toUpdateBranchPayload(values))
+      if (!user || !Number.isInteger(user.id) || user.id <= 0) {
+        throw new Error('Your login session is invalid. Please sign in again.')
       }
-      return createBranch(toCreateBranchPayload(values))
+      if (isEdit && branch) {
+        return updateBranch(branch.id, toUpdateBranchPayload(values, user.id))
+      }
+      return createBranch(toCreateBranchPayload(values, user.id))
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['branches'] })
-      navigate('/branches', {
+      navigate('/auth/branches', {
         replace: true,
         state: {
           successMessage: isEdit
@@ -130,13 +135,18 @@ function BranchEditor({ mode, branch }: BranchEditorProps) {
     setErrors(nextErrors)
     setSubmitError('')
 
+    if (!user) {
+      setSubmitError('You must be signed in to manage branches.')
+      return
+    }
+
     if (Object.keys(nextErrors).length === 0) mutation.mutate()
   }
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
       <Link
-        to="/branches"
+        to="/auth/branches"
         className="text-sm font-semibold text-[#059669] hover:text-[#047857]"
       >
         Back to branches
@@ -198,7 +208,7 @@ function PageMessage({ title, description, actionLabel, onAction }: PageMessageP
           </button>
         )}
         <Link
-          to="/branches"
+          to="/auth/branches"
           className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700"
         >
           Back to list
