@@ -1,5 +1,13 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 
+
+import { DocsPage } from '@/pages/docs/docs-page'
+import { NotFoundPage } from '@/pages/not-found/not-found-page'
+import MainLayout from '@/layouts/main-layout'
+import HomePage from '@/pages/home/home-page'
+import BranchListPage from '@/pages/branch/branch-list-page'
+import BranchDetailPage from '@/pages/branch/branch-detail-page'
+import SlotBookingPage from '@/pages/slot-booking/slot-booking-page'
 import { AdminLayout } from '@/layouts/admin-layout'
 import { MainLayout } from '@/layouts/main-layout'
 import { StaffLayout } from '@/layouts/staff-layout'
@@ -32,6 +40,7 @@ import { ProfilePage } from '@/pages/profile/profile-page'
 import { TimeSlotDetailPage } from '@/pages/time-slots/time-slot-detail-page'
 import { TimeSlotFormPage } from '@/pages/time-slots/time-slot-form-page'
 import { TimeSlotListPage } from '@/pages/time-slots/time-slot-list-page'
+
 
 export const router = createBrowserRouter([
   {
@@ -108,6 +117,23 @@ export const router = createBrowserRouter([
       {
         path: 'staff',
         element: <StaffPage />,
+      },
+      {
+        path: 'slot-booking',
+        element: <SlotBookingPage />,
+      },
+      {
+        path: 'branches',
+        children: [
+          {
+            index: true,
+            element: <BranchListPage />,
+          },
+          {
+            path: ':id',
+            element: <BranchDetailPage />,
+          },
+        ]
       },
     ],
   },

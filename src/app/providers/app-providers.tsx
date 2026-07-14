@@ -3,7 +3,6 @@ import {
   QueryClientProvider,
   type QueryClient,
 } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 import { StaffSessionProvider } from '@/context/staff-session-context'
 import { AuthProvider } from '@/context/auth-context'
@@ -18,10 +17,15 @@ export function AppProviders({
 }: AppProvidersProps) {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <StaffSessionProvider>{children}</StaffSessionProvider>
-      </AuthProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
+<QueryClientProvider client={queryClient}>
+  <AuthProvider>
+    <StaffSessionProvider>
+      {children}
+    </StaffSessionProvider>
+  </AuthProvider>
+
+  <ReactQueryDevtools initialIsOpen={false} />
+</QueryClientProvider>
     </QueryClientProvider>
   )
 }
