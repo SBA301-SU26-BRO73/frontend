@@ -7,7 +7,13 @@ import { AppProviders } from '@/app/providers/app-providers'
 import { queryClient } from '@/app/query-client'
 import { router } from '@/app/router'
 
-createRoot(document.getElementById('root')!).render(
+const rootElement = document.getElementById('root')
+
+if (!rootElement) {
+  throw new Error('Root element #root was not found')
+}
+
+createRoot(rootElement).render(
   <StrictMode>
     <AppProviders queryClient={queryClient}>
       <RouterProvider router={router} />

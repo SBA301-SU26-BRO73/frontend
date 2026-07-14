@@ -1,14 +1,23 @@
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
 
 const navItems = [
   { to: '/', label: 'Home' },
   { to: '/docs', label: 'Docs' },
+  { to: '/auth/branches', label: 'Branches' },
+  { to: '/auth/courts', label: 'Courts' },
+  { to: '/auth/time-slots', label: 'Time Slots' },
 ]
 
 export function MainLayout() {
+  const location = useLocation()
+  const isManagementPage =
+    location.pathname.startsWith('/auth/branches') ||
+    location.pathname.startsWith('/auth/courts') ||
+    location.pathname.startsWith('/auth/time-slots')
+
   return (
     <div className="min-h-screen text-slate-900">
-      <header className="sticky top-0 z-10 border-b border-slate-200/80 bg-white/80 backdrop-blur">
+      {!isManagementPage && <header className="sticky top-0 z-10 border-b border-slate-200/80 bg-white/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-orange-600">
@@ -31,7 +40,7 @@ export function MainLayout() {
             ))}
           </nav>
         </div>
-      </header>
+      </header>}
 
       <main>
         <Outlet />

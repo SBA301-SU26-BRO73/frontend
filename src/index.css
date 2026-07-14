@@ -72,6 +72,8 @@
   --sidebar-ring: #10b981;
   color: var(--foreground);
   background: var(--background);
+  color: #0f172a;
+  background: #f5f6f8;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -136,6 +138,12 @@ a {
     box-shadow 150ms ease,
     transform 150ms ease,
     opacity 150ms ease;
+    color 200ms ease,
+    background-color 200ms ease,
+    border-color 200ms ease,
+    opacity 200ms ease,
+    transform 200ms ease,
+    box-shadow 200ms ease;
 }
 
 button {
