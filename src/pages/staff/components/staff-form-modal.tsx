@@ -38,7 +38,8 @@ export function StaffFormModal({
 
   const { data: branchPage } = useQuery({
     queryKey: ['branches'],
-    queryFn: getBranches,
+    queryFn: () =>
+      getBranches({ page: 0, size: 100, sortField: 'name', sortDirection: 'asc' }),
   })
   const branches = branchPage?.content ?? []
 
