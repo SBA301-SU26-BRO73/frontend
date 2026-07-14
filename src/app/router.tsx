@@ -22,6 +22,7 @@ import { CourtFormPage } from '@/pages/courts/court-form-page'
 import { CourtListPage } from '@/pages/courts/court-list-page'
 import { HomePage } from '@/pages/home/home-page'
 import { NotFoundPage } from '@/pages/not-found/not-found-page'
+import {AdminBookingPage} from "@/pages/admin/AdminBookingPage.tsx";
 import { StaffPage } from '@/pages/staff/staff-page'
 import { StaffSchedulePage } from '@/pages/staff/staff-schedule-page'
 import { StaffCheckInPage } from '@/pages/staff/staff-check-in-page'
@@ -140,6 +141,15 @@ export const router = createBrowserRouter([
       { path: 'pending', element: <PendingPage /> },
       { path: 'court-types', element: <CourtTypesPage /> },
       { path: 'plans', element: <PlansPage /> },
+    ],
+  },
+  {
+    path: 'admin',
+    children: [
+      {
+        path: 'bookings',
+        element: <AdminBookingPage />,
+      },
     ],
   },
   { path: 'profile', element: <ProfilePage /> },
