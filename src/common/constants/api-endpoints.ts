@@ -6,6 +6,9 @@ export const API_PREFIXES = {
   categories: '/categories',
   courtTypes: '/court-types',
   plans: '/subscription-plans',
+  branches: '/branches',
+  courts: '/courts',
+  timeSlotTemplates: '/time-slot-templates',
 } as const
 
 function joinEndpoint(...segments: Array<string | number>) {
@@ -55,5 +58,21 @@ export const API_ENDPOINTS = {
   },
   categories: {
     list: joinEndpoint(API_PREFIXES.categories),
+  },
+  branches: {
+    list: joinEndpoint(API_PREFIXES.branches),
+    detail: (id: string | number) => joinEndpoint(API_PREFIXES.branches, id),
+  },
+  courts: {
+    list: joinEndpoint(API_PREFIXES.courts),
+    detail: (id: string | number) => joinEndpoint(API_PREFIXES.courts, id),
+  },
+  timeSlotTemplates: {
+    list: joinEndpoint(API_PREFIXES.timeSlotTemplates),
+    detail: (id: string | number) => joinEndpoint(API_PREFIXES.timeSlotTemplates, id),
+    byCourt: (courtId: string | number) =>
+      joinEndpoint(API_PREFIXES.timeSlotTemplates, 'court', courtId),
+    apply: (targetCourtId: string | number) =>
+      joinEndpoint(API_PREFIXES.timeSlotTemplates, 'apply', targetCourtId),
   },
 } as const

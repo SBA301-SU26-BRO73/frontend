@@ -13,9 +13,17 @@ import { RegisterCustomerPage } from '@/pages/auth/register-customer-page'
 import { RolePickPage } from '@/pages/auth/role-pick-page'
 import { DocsPage } from '@/pages/docs/docs-page'
 import { ForbiddenPage } from '@/pages/errors/forbidden-page'
+import { BranchFormPage } from '@/pages/branches/branch-form-page'
+import { BranchListPage } from '@/pages/branches/branch-list-page'
+import { CourtDetailPage } from '@/pages/courts/court-detail-page'
+import { CourtFormPage } from '@/pages/courts/court-form-page'
+import { CourtListPage } from '@/pages/courts/court-list-page'
 import { HomePage } from '@/pages/home/home-page'
 import { NotFoundPage } from '@/pages/not-found/not-found-page'
 import { ProfilePage } from '@/pages/profile/profile-page'
+import { TimeSlotDetailPage } from '@/pages/time-slots/time-slot-detail-page'
+import { TimeSlotFormPage } from '@/pages/time-slots/time-slot-form-page'
+import { TimeSlotListPage } from '@/pages/time-slots/time-slot-list-page'
 
 export const router = createBrowserRouter([
   {
@@ -35,6 +43,50 @@ export const router = createBrowserRouter([
       { path: 'register/customer', element: <RegisterCustomerPage /> },
       { path: 'register/court-owner', element: <RegisterAdminPage /> },
       { path: 'forgot-password', element: <ForgotPage /> },
+      {
+        path: 'branches',
+        element: <BranchListPage />,
+      },
+      {
+        path: 'branches/new',
+        element: <BranchFormPage mode="create" />,
+      },
+      {
+        path: 'branches/:branchId/edit',
+        element: <BranchFormPage mode="edit" />,
+      },
+      {
+        path: 'courts',
+        element: <CourtListPage />,
+      },
+      {
+        path: 'courts/new',
+        element: <CourtFormPage mode="create" />,
+      },
+      {
+        path: 'courts/:courtId',
+        element: <CourtDetailPage />,
+      },
+      {
+        path: 'courts/:courtId/edit',
+        element: <CourtFormPage mode="edit" />,
+      },
+      {
+        path: 'time-slots',
+        element: <TimeSlotListPage />,
+      },
+      {
+        path: 'time-slots/new',
+        element: <TimeSlotFormPage mode="create" />,
+      },
+      {
+        path: 'time-slots/:timeSlotId',
+        element: <TimeSlotDetailPage />,
+      },
+      {
+        path: 'time-slots/:timeSlotId/edit',
+        element: <TimeSlotFormPage mode="edit" />,
+      },
     ],
   },
   {

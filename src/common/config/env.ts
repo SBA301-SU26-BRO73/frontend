@@ -1,3 +1,7 @@
+const DEFAULT_API_URL = '/api'
+
+const configuredApiUrl = import.meta.env.VITE_API_URL?.trim()
+
 export const env = {
-  apiUrl: import.meta.env.VITE_API_URL ?? 'http://localhost:8080/api',
-}
+  apiUrl: (configuredApiUrl || DEFAULT_API_URL).replace(/\/+$/, ''),
+} as const
