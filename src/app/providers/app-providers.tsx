@@ -5,6 +5,7 @@ import {
 } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
+import { StaffSessionProvider } from '@/context/staff-session-context'
 import { AuthProvider } from '@/context/auth-context'
 
 type AppProvidersProps = PropsWithChildren<{
@@ -18,7 +19,7 @@ export function AppProviders({
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        {children}
+        <StaffSessionProvider>{children}</StaffSessionProvider>
       </AuthProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>

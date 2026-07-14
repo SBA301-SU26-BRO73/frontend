@@ -56,3 +56,19 @@ export async function updateCourt(courtId: number, payload: UpdateCourtRequest) 
 export async function deleteCourt(courtId: number) {
   await axiosClient.delete(API_ENDPOINTS.courts.detail(courtId))
 }
+
+/**
+ * Courts belonging to a branch.
+ *
+ * The backend exposes a paged, branch-agnostic `GET /api/courts`, so we pull a
+ * large page and filter by branch on the client.
+ */
+export async function getCourtsByBranch(branchId: number): Promise<Court[]> {
+  const page = await getCourts({
+    page: 0,
+    size: 200,
+    sortField: 'id',
+    sortDirection: 'asc',
+  })
+  return page.content.filter((court) => court.branchId === branchId)
+}
