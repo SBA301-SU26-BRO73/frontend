@@ -36,6 +36,8 @@
     -ms-overflow-style: none; 
     scrollbar-width: none; 
   }
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -175,7 +177,6 @@
       height: 300px; 
     }
   }
-}
 body {
   margin: 0;
   min-width: 320px;
@@ -194,12 +195,6 @@ a {
     box-shadow 150ms ease,
     transform 150ms ease,
     opacity 150ms ease;
-    color 200ms ease,
-    background-color 200ms ease,
-    border-color 200ms ease,
-    opacity 200ms ease,
-    transform 200ms ease,
-    box-shadow 200ms ease;
 }
 
 button {

@@ -11,8 +11,8 @@ import {
   AlertCircle,
   Loader2,
 } from 'lucide-react';
-import { ProgressStepper } from '../components/ProgressStepper';
-import { BookingSummary } from '../components/BookingSummary';
+import { ProgressStepper } from '../../components/ProgressStepper';
+import { BookingSummary } from '../../components/BookingSummary';
 
 type PaymentStatus = 'uploading' | 'pending' | 'approved' | 'rejected' | 'error';
 

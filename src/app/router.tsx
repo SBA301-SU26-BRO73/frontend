@@ -1,13 +1,8 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 
-
-import { DocsPage } from '@/pages/docs/docs-page'
-import { NotFoundPage } from '@/pages/not-found/not-found-page'
-import MainLayout from '@/layouts/main-layout'
-import HomePage from '@/pages/home/home-page'
-import BranchListPage from '@/pages/branch/branch-list-page'
 import BranchDetailPage from '@/pages/branch/branch-detail-page'
 import SlotBookingPage from '@/pages/slot-booking/slot-booking-page'
+import GuestBranchListPage from '@/pages/branch/branch-list-page'
 import { AdminLayout } from '@/layouts/admin-layout'
 import { MainLayout } from '@/layouts/main-layout'
 import { StaffLayout } from '@/layouts/staff-layout'
@@ -28,7 +23,6 @@ import { BranchListPage } from '@/pages/branches/branch-list-page'
 import { CourtDetailPage } from '@/pages/courts/court-detail-page'
 import { CourtFormPage } from '@/pages/courts/court-form-page'
 import { CourtListPage } from '@/pages/courts/court-list-page'
-import { HomePage } from '@/pages/home/home-page'
 import { NotFoundPage } from '@/pages/not-found/not-found-page'
 import {AdminBookingPage} from "@/pages/admin/AdminBookingPage.tsx";
 import { StaffPage } from '@/pages/staff/staff-page'
@@ -40,6 +34,7 @@ import { ProfilePage } from '@/pages/profile/profile-page'
 import { TimeSlotDetailPage } from '@/pages/time-slots/time-slot-detail-page'
 import { TimeSlotFormPage } from '@/pages/time-slots/time-slot-form-page'
 import { TimeSlotListPage } from '@/pages/time-slots/time-slot-list-page'
+import HomePage from '@/pages/home/home-page'
 
 
 export const router = createBrowserRouter([
@@ -49,6 +44,17 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: 'docs', element: <DocsPage /> },
+      {
+        path: 'branches',
+        children: [
+          { index: true, element: <GuestBranchListPage /> },
+          { path: ':id', element: <BranchDetailPage /> },
+        ],
+      },
+      {
+        path: 'slot-booking',
+        element: <SlotBookingPage />,
+      },
     ],
   },
   {

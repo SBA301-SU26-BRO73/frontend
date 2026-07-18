@@ -17,15 +17,11 @@ export function AppProviders({
 }: AppProvidersProps) {
   return (
     <QueryClientProvider client={queryClient}>
-<QueryClientProvider client={queryClient}>
-  <AuthProvider>
-    <StaffSessionProvider>
-      {children}
-    </StaffSessionProvider>
-  </AuthProvider>
-
-  <ReactQueryDevtools initialIsOpen={false} />
-</QueryClientProvider>
+      <AuthProvider>
+        <StaffSessionProvider>
+          {children}
+        </StaffSessionProvider>
+      </AuthProvider>
     </QueryClientProvider>
   )
 }

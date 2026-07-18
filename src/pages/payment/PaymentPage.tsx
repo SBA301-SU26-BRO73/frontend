@@ -1,9 +1,9 @@
 import { ArrowLeft, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router';
-import { ProgressStepper } from '../components/ProgressStepper';
-import { QRPaymentCard } from '../components/QRPaymentCard';
-import { UploadReceipt } from '../components/UploadReceipt';
-import { BookingSummary } from '../components/BookingSummary';
+import { ProgressStepper } from '../../components/ProgressStepper';
+import { QRPaymentCard } from '../../components/QRPaymentCard';
+import { UploadReceipt } from '../../components/UploadReceipt';
+import { BookingSummary } from '../../components/BookingSummary';
 
 export function PaymentPage() {
   const navigate = useNavigate();
