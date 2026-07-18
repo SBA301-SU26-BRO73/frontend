@@ -24,7 +24,7 @@ export function TimeSlotFormPage({ mode }: { mode: 'create' | 'edit' }) {
   const detailQuery = useQuery({ queryKey: ['time-slots', 'detail', id], queryFn: () => getTimeSlotTemplateDetail(id), enabled: isEdit && validId, retry: false })
 
   if (!isEdit) return <TimeSlotEditor mode="create" initialCourtId={state?.courtId} returnTo={state?.returnTo} returnState={state?.returnState} />
-  if (!validId) return <Navigate to="/auth/time-slots" replace />
+  if (!validId) return <Navigate to="/admin/time-slots" replace />
   if (detailQuery.isPending) return <PageState title="Đang tải khung giờ..." />
   if (detailQuery.isError) return <PageState title={getTimeSlotErrorCode(detailQuery.error) === 'RESOURCE_NOT_FOUND' ? 'Không tìm thấy khung giờ' : 'Không thể tải khung giờ'} description={getTimeSlotErrorMessage(detailQuery.error)} />
   return <TimeSlotEditor key={detailQuery.data.id} mode="edit" slot={detailQuery.data} returnTo={state?.returnTo} returnState={state?.returnState} />
@@ -42,7 +42,7 @@ function TimeSlotEditor({ mode, slot, initialCourtId, returnTo, returnState }: {
     mutationFn: () => isEdit && slot ? updateTimeSlotTemplate(slot.id, toUpdateTimeSlotPayload(values)) : createTimeSlotTemplate(toCreateTimeSlotPayload(values)),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['time-slots'] })
-      navigate(returnTo ?? '/auth/time-slots', {
+      navigate(returnTo ?? '/admin/time-slots', {
         replace: true,
         state: mergeNavigationState(returnState, {
           successMessage: isEdit
@@ -66,7 +66,7 @@ function TimeSlotEditor({ mode, slot, initialCourtId, returnTo, returnState }: {
     if (Object.keys(nextErrors).length === 0) mutation.mutate()
   }
 
-  return <div className="min-h-screen bg-[#F5F6F8]"><main className="mx-auto max-w-4xl px-4 py-10 sm:px-6"><Link to={returnTo ?? '/auth/time-slots'} state={returnState} className="text-sm font-bold text-[#059669]">← Quay lại</Link><div className="mb-8 mt-4"><p className="text-sm font-bold uppercase tracking-[0.2em] text-[#10B981]">Time slot template</p><h1 className="mt-2 text-3xl font-black">{isEdit ? 'Chỉnh sửa khung giờ' : 'Thêm khung giờ mẫu'}</h1></div>{submitError && <div role="alert" className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{submitError}</div>}<TimeSlotForm values={values} errors={errors} courts={courtsQuery.data?.content ?? []} isEdit={isEdit} isSubmitting={mutation.isPending || courtsQuery.isPending} onChange={handleChange} onSubmit={handleSubmit} /></main></div>
+  return <div className="min-h-screen bg-[#F5F6F8]"><main className="mx-auto max-w-4xl px-4 py-10 sm:px-6"><Link to={returnTo ?? '/admin/time-slots'} state={returnState} className="text-sm font-bold text-[#059669]">← Quay lại</Link><div className="mb-8 mt-4"><p className="text-sm font-bold uppercase tracking-[0.2em] text-[#10B981]">Time slot template</p><h1 className="mt-2 text-3xl font-black">{isEdit ? 'Chỉnh sửa khung giờ' : 'Thêm khung giờ mẫu'}</h1></div>{submitError && <div role="alert" className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{submitError}</div>}<TimeSlotForm values={values} errors={errors} courts={courtsQuery.data?.content ?? []} isEdit={isEdit} isSubmitting={mutation.isPending || courtsQuery.isPending} onChange={handleChange} onSubmit={handleSubmit} /></main></div>
 }
 
 function mergeNavigationState(base: unknown, extra: Record<string, unknown>) {
@@ -74,5 +74,5 @@ function mergeNavigationState(base: unknown, extra: Record<string, unknown>) {
 }
 
 function PageState({ title, description }: { title: string; description?: string }) {
-  return <div className="px-4 py-20 text-center"><h1 className="text-2xl font-bold">{title}</h1>{description && <p className="mt-3 text-slate-600">{description}</p>}<Link to="/auth/time-slots" className="mt-6 inline-block rounded-xl border bg-white px-4 py-2 text-sm font-bold">Về danh sách</Link></div>
+  return <div className="px-4 py-20 text-center"><h1 className="text-2xl font-bold">{title}</h1>{description && <p className="mt-3 text-slate-600">{description}</p>}<Link to="/admin/time-slots" className="mt-6 inline-block rounded-xl border bg-white px-4 py-2 text-sm font-bold">Về danh sách</Link></div>
 }

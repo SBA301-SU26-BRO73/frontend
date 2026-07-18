@@ -130,16 +130,51 @@ export const router = createBrowserRouter([
       },
       {
         path: 'branches',
-        children: [
-          {
-            index: true,
-            element: <BranchListPage />,
-          },
-          {
-            path: ':id',
-            element: <BranchDetailPage />,
-          },
-        ]
+        element: <BranchListPage />,
+      },
+      {
+        path: 'branches/new',
+        element: <BranchFormPage mode="create" />,
+      },
+      {
+        path: 'branches/:branchId/edit',
+        element: <BranchFormPage mode="edit" />,
+      },
+      {
+        path: 'courts',
+        element: <CourtListPage />,
+      },
+      {
+        path: 'courts/new',
+        element: <CourtFormPage mode="create" />,
+      },
+      {
+        path: 'courts/:courtId',
+        element: <CourtDetailPage />,
+      },
+      {
+        path: 'courts/:courtId/edit',
+        element: <CourtFormPage mode="edit" />,
+      },
+      {
+        path: 'time-slots',
+        element: <TimeSlotListPage />,
+      },
+      {
+        path: 'time-slots/new',
+        element: <TimeSlotFormPage mode="create" />,
+      },
+      {
+        path: 'time-slots/:timeSlotId',
+        element: <TimeSlotDetailPage />,
+      },
+      {
+        path: 'time-slots/:timeSlotId/edit',
+        element: <TimeSlotFormPage mode="edit" />,
+      },
+      {
+        path: 'bookings',
+        element: <AdminBookingPage />,
       },
     ],
   },
@@ -173,15 +208,6 @@ export const router = createBrowserRouter([
       { path: 'pending', element: <PendingPage /> },
       { path: 'court-types', element: <CourtTypesPage /> },
       { path: 'plans', element: <PlansPage /> },
-    ],
-  },
-  {
-    path: 'admin',
-    children: [
-      {
-        path: 'bookings',
-        element: <AdminBookingPage />,
-      },
     ],
   },
   { path: 'profile', element: <ProfilePage /> },
