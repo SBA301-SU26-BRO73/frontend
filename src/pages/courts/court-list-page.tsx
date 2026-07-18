@@ -74,9 +74,9 @@ export function CourtListPage() {
             <p className="mt-2 text-sm text-[#6B7280]">Quản lý sân ở tất cả branch, loại sân và trạng thái vận hành.</p>
           </div>
           <div className="flex gap-3">
-            <Link to="/auth/time-slots" className="rounded-xl border border-emerald-200 bg-white px-4 py-3 text-sm font-bold text-[#059669] hover:bg-emerald-50">Khung giờ</Link>
-            <Link to="/auth/branches" className="rounded-xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm font-bold text-[#374151] hover:border-[#10B981] hover:text-[#059669]">Quản lý branch</Link>
-            <Link to="/auth/courts/new" className="inline-flex items-center gap-2 rounded-xl bg-[#10B981] px-4 py-3 text-sm font-bold text-white shadow-sm hover:bg-[#059669]">
+            <Link to="/admin/time-slots" className="rounded-xl border border-emerald-200 bg-white px-4 py-3 text-sm font-bold text-[#059669] hover:bg-emerald-50">Khung giờ</Link>
+            <Link to="/admin/branches" className="rounded-xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm font-bold text-[#374151] hover:border-[#10B981] hover:text-[#059669]">Quản lý branch</Link>
+            <Link to="/admin/courts/new" className="inline-flex items-center gap-2 rounded-xl bg-[#10B981] px-4 py-3 text-sm font-bold text-white shadow-sm hover:bg-[#059669]">
               <Plus className="size-5" aria-hidden="true" /> Thêm sân
             </Link>
           </div>
@@ -129,8 +129,8 @@ export function CourtListPage() {
                       <p className="pl-[22px]">Cập nhật: {formatDateTime(court.updatedAt)}</p>
                     </div>
                     <div className="mt-5 flex gap-2 border-t border-[#E5E7EB] pt-4">
-                      <ActionLink to={`/auth/courts/${court.id}`} label="Chi tiết" icon={Eye} />
-                      <ActionLink to={`/auth/courts/${court.id}/edit`} label="Sửa" icon={Pencil} />
+                      <ActionLink to={`/admin/courts/${court.id}`} label="Chi tiết" icon={Eye} />
+                      <ActionLink to={`/admin/courts/${court.id}/edit`} label="Sửa" icon={Pencil} />
                       <button type="button" disabled={deleteMutation.isPending} onClick={() => handleDelete(court)} className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-sm font-bold text-red-600 hover:bg-red-50 disabled:opacity-50"><Trash2 className="size-4" aria-hidden="true" />Xóa</button>
                     </div>
                   </div>

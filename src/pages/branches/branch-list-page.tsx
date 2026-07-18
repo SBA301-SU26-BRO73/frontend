@@ -159,7 +159,7 @@ export function BranchListPage() {
         <div className="flex flex-wrap items-center justify-between gap-4">
           <h1 className="text-[32px] font-bold tracking-tight">Quản lý cơ sở</h1>
           <Link
-            to="/auth/courts"
+            to="/admin/courts"
             className="rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm font-bold text-[#059669] hover:border-[#10B981] hover:bg-emerald-50"
           >
             Quản lý sân
@@ -223,7 +223,7 @@ export function BranchListPage() {
               <SlidersHorizontal aria-hidden="true" className="size-5" />
             </button>
             <Link
-              to="/auth/branches/new"
+              to="/admin/branches/new"
               aria-label="Thêm cơ sở"
               className="grid size-12 shrink-0 place-items-center rounded-xl bg-[#10B981] text-white shadow-sm transition duration-200 hover:bg-[#059669] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-200"
             >
@@ -398,7 +398,7 @@ function BranchDetailCard({ branch, courtCount }: BranchDetailCardProps) {
   return (
     <section className="relative mt-7 rounded-[20px] border border-[#E5E7EB] bg-white p-5 shadow-sm sm:p-6">
       <Link
-        to={`/auth/branches/${branch.id}/edit`}
+        to={`/admin/branches/${branch.id}/edit`}
         aria-label={`Chỉnh sửa ${branch.name}`}
         className="absolute right-5 top-5 grid size-10 place-items-center rounded-full text-[#6B7280] transition duration-200 hover:bg-emerald-50 hover:text-[#059669] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-100"
       >
@@ -506,8 +506,8 @@ function CourtList({
           Danh sách sân ({courts.length})
         </h2>
         <Link
-          to="/auth/courts/new"
-          state={{ returnTo: '/auth/branches', selectedBranchId: branchId }}
+          to="/admin/courts/new"
+          state={{ returnTo: '/admin/branches', selectedBranchId: branchId }}
           aria-label="Thêm sân"
           className="shrink-0 rounded-lg px-2 py-2 text-sm font-bold text-[#10B981] transition duration-200 hover:bg-emerald-50 hover:text-[#059669]"
         >
@@ -582,10 +582,10 @@ function CourtList({
               </div>
               <div className="flex shrink-0 items-center gap-1">
                 <Link
-                  to="/auth/time-slots"
+                  to="/admin/time-slots"
                   state={{
                     courtId: court.id,
-                    returnTo: '/auth/branches',
+                    returnTo: '/admin/branches',
                     returnState: { selectedBranchId: branchId, focusCourtId: court.id },
                   }}
                   aria-label={`Quản lý khung giờ ${court.name}`}
@@ -595,9 +595,9 @@ function CourtList({
                   <Clock3 aria-hidden="true" className="size-5" />
                 </Link>
                 <Link
-                  to={`/auth/courts/${court.id}`}
+                  to={`/admin/courts/${court.id}`}
                   state={{
-                    returnTo: '/auth/branches',
+                    returnTo: '/admin/branches',
                     selectedBranchId: branchId,
                     focusCourtId: court.id,
                   }}
@@ -608,9 +608,9 @@ function CourtList({
                   <Eye aria-hidden="true" className="size-5" />
                 </Link>
                 <Link
-                  to={`/auth/courts/${court.id}/edit`}
+                  to={`/admin/courts/${court.id}/edit`}
                   state={{
-                    returnTo: '/auth/branches',
+                    returnTo: '/admin/branches',
                     selectedBranchId: branchId,
                     focusCourtId: court.id,
                   }}

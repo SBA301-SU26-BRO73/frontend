@@ -1,4 +1,5 @@
-import { Outlet, NavLink } from 'react-router-dom'
+import { useEffect } from 'react'
+import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import {
   Home,
   Calendar,
@@ -12,6 +13,8 @@ import {
   ChevronDown,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/avatar'
+import { useAuth } from '@/hooks/use-auth-context'
+import { tokenStorage } from '@/utils/token'
 
 const NAV_ITEMS = [
   { id: 'dashboard', to: '/admin/dashboard', icon: Home, label: 'Dashboard' },
@@ -28,6 +31,29 @@ const NAV_SYSTEM = [
 ] as const
 
 export function AdminLayout() {
+  const navigate = useNavigate()
+  const { user, isLoggedIn, clearAuth } = useAuth()
+  const hasAccessToken = !!tokenStorage.getAccessToken()
+
+  useEffect(() => {
+    if (!isLoggedIn || !hasAccessToken) {
+      if (isLoggedIn && !hasAccessToken) clearAuth()
+      navigate('/auth/login?role=admin', { replace: true })
+      return
+    }
+
+    if (user?.role === 'SUPER_ADMIN') {
+      navigate('/super-admin', { replace: true })
+      return
+    }
+
+    if (user?.role !== 'ADMIN') {
+      navigate('/403', { replace: true })
+    }
+  }, [clearAuth, hasAccessToken, isLoggedIn, navigate, user])
+
+  if (!isLoggedIn || !hasAccessToken || user?.role !== 'ADMIN') return null
+
   return (
     <div className="flex h-screen bg-slate-50">
       {/* Sidebar */}

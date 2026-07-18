@@ -51,7 +51,7 @@ export function CourtFormPage({ mode }: CourtFormPageProps) {
       />
     )
   }
-  if (!hasValidId) return <Navigate to="/auth/courts" replace />
+  if (!hasValidId) return <Navigate to="/admin/courts" replace />
   if (detailQuery.isPending) return <PageMessage title="Đang tải thông tin sân..." />
   if (detailQuery.isError) {
     const notFound = getCourtErrorCode(detailQuery.error) === 'RESOURCE_NOT_FOUND'
@@ -115,7 +115,7 @@ function CourtEditor({
       : createCourt(toCreateCourtPayload(values)),
     onSuccess: async (savedCourt) => {
       await queryClient.invalidateQueries({ queryKey: ['courts'] })
-      navigate(returnTo ?? '/auth/courts', {
+      navigate(returnTo ?? '/admin/courts', {
         replace: true,
         state: {
           successMessage: isEdit ? 'Cập nhật sân thành công.' : 'Tạo sân thành công.',
@@ -176,7 +176,7 @@ function CourtEditor({
     <div className="min-h-screen bg-[#F5F6F8]">
       <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
         <Link
-          to={returnTo ?? '/auth/courts'}
+          to={returnTo ?? '/admin/courts'}
           state={{ selectedBranchId, focusCourtId: focusCourtId ?? court?.id }}
           className="text-sm font-semibold text-[#059669] hover:text-[#047857]"
         >
@@ -217,7 +217,7 @@ function PageMessage({ title, description, actionLabel, onAction }: { title: str
       {description && <p className="mt-3 text-slate-600">{description}</p>}
       <div className="mt-6 flex justify-center gap-3">
         {onAction && actionLabel && <button onClick={onAction} className="rounded-xl bg-[#10B981] px-4 py-2 text-sm font-bold text-white">{actionLabel}</button>}
-        <Link to="/auth/courts" className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700">Về danh sách</Link>
+        <Link to="/admin/courts" className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700">Về danh sách</Link>
       </div>
     </div>
   )
